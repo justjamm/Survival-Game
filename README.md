@@ -1,7 +1,7 @@
 # Survival Game
 
 "Survival Game" is my final project for Professor Steven Brandt's CSC 1351 course. 
-This project cotains assets from Terraria, owned by Re-Logic, used soley for educational and non-commerical purposes. No profit is being made from this project and all rights remain to their respective owners.
+This project contains assets from Terraria, owned by Re-Logic, used soley for educational and non-commerical purposes. No profit is being made from this project and all rights remain to their respective owners.
 The requirements for this project was that it;
 
 1. Use the professor's BasicGraphics library, and
