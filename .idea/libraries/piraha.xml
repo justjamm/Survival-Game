@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="piraha">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/piraha.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

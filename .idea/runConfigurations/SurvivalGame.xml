@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SurvivalGame" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="SurvivalGame.SurvivalGame" />
+    <module name="stevenrbrandt-BasicGraphics-f3fd7d5" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
