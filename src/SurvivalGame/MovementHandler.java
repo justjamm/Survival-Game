@@ -15,8 +15,7 @@ public class MovementHandler {
     private Ground g;
     private BackgroundHandler b;
     public MouseAdapter ma;
-    private int speedX = 2, speedY = 5;
-    private final int PARALLAX_OFFSET = 1;
+    private int speedX = 2, speedY = -7;
     private boolean superSpeed = false;
     private int INCR = 1;
     private int i = INCR;
@@ -31,17 +30,17 @@ public class MovementHandler {
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
-                if (!p.touchingFloor) {
-                    double vy = g.getVelY() - 0.1;
-                    g.setVel(g.getVelX(), vy);
-                    b.setVel(b.getVelX(), vy);
-                } else {
-                    g.setVel(g.getVelX(), 0);
-                    b.setVel(b.getVelX(), 0);
+                if (p.touchingFloor) {
+                    p.setVel(p.getVelX(), p.getVelY());
                 }
+                else if (!p.touchingFloor) {
+                    double vy = p.getVelY() + 0.02;
+                    p.setVel(p.getVelX(), vy );
+                    //System.out.printf("vy: %.4f\n", vy);
+                }
+                System.out.printf("Y-Velocity: %.4f\n", p.getVelY());
             }
         });
-
 
         card.addKeyListener(new KeyWrapper(new KeyAdapter() {
 
@@ -50,17 +49,7 @@ public class MovementHandler {
             public void keyPressed(KeyEvent ke) {
                 // UP
                 if (ke.getKeyCode() == KeyEvent.VK_W || ke.getKeyCode() == KeyEvent.VK_UP) {
-                    if (p.touchingFloor) {
-                        g.setVel(g.getVelX(), speedY);
-                        b.setVel(b.getVelX(), speedY);
-
-                        if (p.isLeft) {
-                            p.setPicture(p.jumpingSprites[0]);
-                        } else {
-                            p.setPicture(p.jumpingSprites[1]);
-                        }
-                        p.touchingFloor = false;
-                    }
+                    moveUp();
                 }
 
                 // RIGHT
@@ -71,11 +60,6 @@ public class MovementHandler {
                 // LEFT
                 else if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_LEFT) {
                     moveLeft();
-                }
-
-                else if (ke.getKeyCode() == KeyEvent.VK_S || ke.getKeyCode() == KeyEvent.VK_DOWN) {
-                    g.setVel(g.getVelX(), 0);
-                    b.setVel(b.getVelX(), 0);
                 }
 
                 else if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -100,19 +84,16 @@ public class MovementHandler {
             @Override
             public void keyReleased(KeyEvent ke) {
                 if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    g.setVel(0, g.getVelY());
-                    b.setVel(0, b.getVelY());
+                    p.setVel(0, p.getVelY());
                     p.setPicture(p.sprites[0][1]);
 
                 } else if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_LEFT) {
-                    g.setVel(0, g.getVelY());
-                    b.setVel(0, b.getVelY());
+                    p.setVel(0, p.getVelY());
                     p.setPicture(p.sprites[0][0]);
 
                 } else if (ke.getKeyCode() == KeyEvent.VK_W || ke.getKeyCode() == KeyEvent.VK_UP) {
-                    g.setVel(g.getVelX(), 0);
-                    b.setVel(b.getVelX(), 0);
-
+                    p.setVel(p.getVelX(), 0);
+                    p.touchingFloor = false;
                 }
                 i = INCR;
             }
@@ -126,40 +107,23 @@ public class MovementHandler {
             @Override
             public void mousePressed(MouseEvent me) {
                 System.out.println("mouse clicked");
-                for (int j = 0; j < 4 * INCR; j++) {
-                    if (j % INCR == 0) {
-                        if (p.isLeft) p.setPicture(p.actionSprites[j / INCR][0]);
-                        else p.setPicture(p.actionSprites[j / INCR][1]);
-                    }
-
-                }
-                if (p.isLeft) p.setPicture(p.sprites[0][0]);
-                else p.setPicture(p.sprites[0][1]);
-//                while (i < 4 * INCR) { //may break
-//                    if (i % INCR == 0) {
-//                        int step = i / INCR - 1;
-////                        System.out.println("step: " + step + " i: " + i);
-//                        if (step >= 0 && step <= 3) {
-//                            if (isLeft) setPicture(actionSprites[step][0]);
-//                            else if (!isLeft) setPicture(actionSprites[step][1]);
-//                            i++;
-//                            System.out.println("Setting picture to: " + step + " i: " + i);
-//                        }
-//                        else if (step > 3) {
-//                            i = INCR;
-//                        }
-//                    }
-//                    else i++;
-//                }
-//                i = INCR;
-//                setPicture(sprites[0][0]);
             }
         };
     }
+    public void moveUp() {
+        if (p.touchingFloor) {
+            p.setVel(p.getVelX(), speedY);
+
+            if (p.isLeft) {
+                p.setPicture(p.jumpingSprites[0]);
+            } else {
+                p.setPicture(p.jumpingSprites[1]);
+            }
+        }
+    }
 
     public void moveRight() {
-        g.setVel( -1 * speedX, g.getVelY());
-        b.setVel( -1 * speedX + PARALLAX_OFFSET, b.getVelY());
+        p.setVel(speedX, p.getVelY());
 
         p.isLeft = false;
         if (i % INCR == 0) {
@@ -177,8 +141,7 @@ public class MovementHandler {
     }
 
     public void moveLeft() {
-        g.setVel(speedX, g.getVelY());
-        b.setVel(speedX - PARALLAX_OFFSET, b.getVelY());
+        p.setVel(-speedX, p.getVelY());
 
         p.isLeft = true;
         if (i % INCR == 0) {

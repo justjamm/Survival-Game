@@ -46,7 +46,7 @@ public class Player extends Sprite {
         isLeft = true;
         touchingFloor = false;
         setPicture(sprite);
-        setVel(0, 0);
+        //setVel(0, 0);
         setDrawingPriority(1);
         setX(d.width / 2 );
         setY(d.height / 2);

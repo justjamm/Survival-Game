@@ -49,26 +49,14 @@ public class MainCard {
         sc.addSpriteSpriteCollisionListener(Player.class, Ground.class, new SpriteSpriteCollisionListener<Player, Ground>() {
             @Override
             public void collision(Player sp1, Ground sp2) {
-                bgh.setVel(bgh.getVelX(), 0);
-                g.setVel(g.getVelX(), 0);
-                bgh.setY(bgh.getY() + 1);
-                g.setY(g.getY() + 1);
-                p.touchingFloor = true; //
-                //if (p.isLeft) p.setPicture(p.sprites[0][0]);
-                //else p.setPicture(p.sprites[0][1]);
-
-                if (g.getVelX() != 0) {
-                    if (p.isLeft) {
-                        mh.moveLeft();
-                    }
-                    else {
-                        mh.moveRight();
-                    }
+                p.touchingFloor = true;
+                p.setVel(p.getVelX(), 0);
+                p.setY(p.getY() - 2 * p.getVelY());
+                if (p.isLeft) {
+                    p.setPicture(p.sprites[0][0]);
                 }
-                else {
-                    if (p.isLeft) p.setPicture(p.sprites[0][0]);
-                    else p.setPicture(p.sprites[0][1]);
-                }
+                else p.setPicture(p.sprites[0][1]);
+                System.out.println("collision");
 
         }});
 

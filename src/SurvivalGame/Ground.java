@@ -20,7 +20,7 @@ public class Ground extends Sprite {
         g.setColor(new Color(23, 63, 50));
         System.out.println(d.width);
         g.fillRect(0, 0, width, height);
-        setY(d.height * 0.95);
+        setY(d.height * 0.8);
         setX(-1 * (width / 2));
         System.out.println(getY());
         setDrawingPriority(2);
