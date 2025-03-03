@@ -18,6 +18,7 @@ public class BackgroundHandler {
         // GROUND IMAGES
         for (int i = 0; i < bgs.length; i++) {
             bgs[i] = new Background(scene, d);
+            bgs[i].setDrawingPriority(1);
             bgs[i].setPicture(forest[index]);
         }
 
@@ -30,7 +31,7 @@ public class BackgroundHandler {
             if (x >= 0) {
                 x += bgs[i].getWidth();
             }
-            x *= -1;
+            //x *= -1;
         }
 
 
@@ -66,11 +67,11 @@ public class BackgroundHandler {
     }
 
     public double getX() {
-        return bgs[0].getX();
+        return forest[0].getX();
     }
 
     public double getY() {
-        return bgs[0].getY();
+        return forest[0].getY();
     }
 
 }

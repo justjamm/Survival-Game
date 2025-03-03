@@ -29,6 +29,9 @@ public class Scene {
     void addSprite(Sprite sp) {
         Util.invokeAndWait(()->{ sprites.add(sp);});
     }
+    public Dimension getBackgroundSize() {
+        return backgroundSize;
+    }
     
     Scene(SpriteComponent sc) {
         spritecomponent = sc;

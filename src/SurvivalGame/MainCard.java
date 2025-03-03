@@ -5,6 +5,7 @@ import basicgraphics.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.time.Clock;
 
 public class MainCard {
 
@@ -12,12 +13,14 @@ public class MainCard {
     private final SpriteComponent sc;
     private final int RANDOM = (int)(Math.random() * 10);
     private Dimension BOARD;
+    private final int NUM_BACKGROUNDS = 6;
 
     public MainCard(BasicFrame f) {
         mc = f.getCard();
-        BOARD = f.FRAME_SIZE;
+        BOARD = new Dimension (500,500);//f.FRAME_SIZE;
         sc = new SpriteComponent();
         sc.setPreferredSize(BOARD);
+        sc.getScene().setBackgroundSize(new Dimension(1200 * NUM_BACKGROUNDS,3928));
         BasicLayout layout = new BasicLayout();
         mc.setLayout(layout);
         mc.add("x=0,y=0,w=4,h=4", sc);
@@ -33,14 +36,15 @@ public class MainCard {
             }
         }));
 
-        sc.getScene().periodic_x = true;
-        sc.getScene().periodic_y = true;
+        sc.getScene().periodic_x = false;
+        sc.getScene().periodic_y = false;
 
-        Player p = new Player(sc.getScene(), BOARD);
+        Player p = new Player(sc.getScene(), sc.getScene().getBackgroundSize());
+        sc.getScene().setFocus(p);
 
-        BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), BOARD, 6);
-        Ground g = new Ground(sc.getScene(), BOARD);
-        MovementHandler mh = new MovementHandler(mc, p, g, bgh);
+        //BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
+        Ground g = new Ground(sc.getScene(), sc.getScene().getBackgroundSize());
+        MovementHandler mh = new MovementHandler(mc, p);
         sc.addMouseListener(mh.ma);
 
 
@@ -50,12 +54,17 @@ public class MainCard {
             @Override
             public void collision(Player sp1, Ground sp2) {
                 p.touchingFloor = true;
+                p.isJumping = false;
                 p.setVel(p.getVelX(), 0);
                 p.setY(p.getY() - 2 * p.getVelY());
                 if (p.isLeft) {
+                    p.setDrawingPriority(5);
                     p.setPicture(p.sprites[0][0]);
                 }
-                else p.setPicture(p.sprites[0][1]);
+                else {
+                    p.setDrawingPriority(5);
+                    p.setPicture(p.sprites[0][1]);
+                }
                 System.out.println("collision");
 
         }});
