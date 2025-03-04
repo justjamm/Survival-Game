@@ -44,6 +44,7 @@ public class MainCard {
 
         //BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
         Ground g = new Ground(sc.getScene(), sc.getScene().getBackgroundSize());
+        p.setX(g.getWidth() / 2);
         MovementHandler mh = new MovementHandler(mc, p);
         sc.addMouseListener(mh.ma);
 
@@ -56,16 +57,27 @@ public class MainCard {
                 p.touchingFloor = true;
                 p.isJumping = false;
                 p.setVel(p.getVelX(), 0);
-                p.setY(p.getY() - 2 * p.getVelY());
-                if (p.isLeft) {
-                    p.setDrawingPriority(5);
-                    p.setPicture(p.sprites[0][0]);
+
+                if (!p.isRunning) {
+//                    if (p.isLeft) {
+//                        p.setDrawingPriority(5);
+//                        p.setPicture(p.spriteL);
+//                    } else {
+//                        p.setDrawingPriority(5);
+//                        p.setPicture(p.spriteR);
+//                    }
+                    switch (p.direction) {
+                        case 1 -> {
+                            p.setDrawingPriority(5);
+                            p.setPicture(p.spriteR);
+                        }
+                        case -1 -> {
+                            p.setDrawingPriority(5);
+                            p.setPicture(p.spriteL);
+                        }
+                    }
+                    System.out.println("collision");
                 }
-                else {
-                    p.setDrawingPriority(5);
-                    p.setPicture(p.sprites[0][1]);
-                }
-                System.out.println("collision");
 
         }});
 

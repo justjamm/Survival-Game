@@ -8,13 +8,27 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Player extends Sprite {
-    public Picture spriteL;
-    public Picture spriteR;
-    public boolean isLeft;
+    // STILL SPRITES
+    public final Picture spriteL = new Picture("0.png");
+    public final Picture spriteR = new Picture("0f.png");
+
+    // MOVEMENT BOOLEANS
+    //public boolean isLeft;
     public boolean touchingFloor;
     public volatile boolean isJumping;
     public volatile boolean isRunning = false;
-    public volatile int direction = 0;
+
+    // MOVEMENT VARIABLES
+    public volatile int direction = -1;
+    private final int speedX = 2;
+    private final int speedY = 7;
+
+    public double InitY;
+    private final double JUMP_DIST = spriteL.getWidth() * 3;
+    private double GOAL_Y;
+
+
+    // SPRITE ARRAYS
     public final Picture[][] sprites = {
             {new Picture("6.png"), new Picture("6f.png")},
             {new Picture("7.png"), new Picture("7f.png")},
@@ -40,67 +54,59 @@ public class Player extends Sprite {
     public Player(Scene scene, Dimension d) {
         super(scene);
         this.freezeOrientation = true;
-        spriteL = new Picture("0.png");
-        spriteR = new Picture("0f.png");
-        isLeft = true;
+        //isLeft = true;
         touchingFloor = false;
         setDrawingPriority(5);
         setPicture(spriteR);
-        //setVel(0, 0);
-        //setX(d.width / 2 );
-        //setY(d.height / 2);
-        setX(250);
-        setY(3928 - spriteL.getHeight());
+        System.out.println("Player height: " + getHeight());
+        setX(0);
+        setY(-getHeight());
+        //setY(3928 - 2 * spriteL.getHeight());
 
         ClockWorker.addTask(new Task() {
             int frame = 0;
-            int INCR = 3;
-
             @Override
             public void run() {
-                if (iteration()%10==0){
-                    if (isRunning && !isJumping) {
+                if (iteration() % 10 == 0){
+                    if (isRunning && !isJumping && touchingFloor) {
                         switch (direction) {
-                            case 0 -> {
+                            case 1 -> {
                                 if (frame > 12) {
                                     frame = 0;
                                 }
                                 setPicture(sprites[frame++][1]);
-                                setVel(7, getVelY());
+                                setVel(speedX, getVelY());
 
                             }
-                            case 1 -> {
+                            case -1 -> {
                                 if (frame > 12) {
                                     frame = 0;
                                 }
                                 setPicture(sprites[frame++][0]);
-                                setVel(-7, getVelY());
-
+                                setVel(-speedX, getVelY());
                             }
                         }
                     }
-                    else if (isJumping) {
+                    else if (isJumping || !touchingFloor) {
+
                         switch (direction) {
-                            case 0 -> {
-                                if (isRunning) {
-                                    setVel(7, getVelY());
-                                }
+                            case 1 -> {
                                 setPicture(jumpingSprites[1]);
                             }
-                            case 1 -> {
-                                if (isRunning) {
-                                    setVel(-7, getVelY());
-                                }
+                            case -1 -> {
                                 setPicture(jumpingSprites[0]);
                             }
+                        }
+                        if (isRunning) {
+                            setVel(direction * speedX, getVelY());
                         }
                     }
                     else {
                         switch (direction) {
-                            case 0 -> {
+                            case 1 -> {
                                 setPicture(spriteR);
                             }
-                            case 1 -> {
+                            case -1 -> {
                                 setPicture(spriteL);
                             }
                         }
@@ -108,6 +114,25 @@ public class Player extends Sprite {
                     }
                 }
 
+            }
+        });
+
+        ClockWorker.addTask(new Task() {
+
+            @Override
+            public void run() {
+                if (isJumping) {
+                    GOAL_Y = InitY - JUMP_DIST;
+
+                    if (getY() > GOAL_Y) {
+                        setVel(getVelX(), -speedY);
+                    }
+                    else {
+                        setVel(getVelX(), 0);
+                        isJumping = false;
+                    }
+
+                }
             }
         });
 
