@@ -17,16 +17,17 @@ public class Player extends Sprite {
     public boolean touchingFloor;
     public volatile boolean isJumping;
     public volatile boolean isRunning = false;
+    public volatile boolean isSwinging = false;
 
     // MOVEMENT VARIABLES
     public volatile int direction = -1;
     private final int speedX = 2;
     private final int speedY = 7;
-
     public double InitY;
     private final double JUMP_DIST = spriteL.getWidth() * 3;
-    private double GOAL_Y;
 
+
+    public MouseAdapter ma;
 
     // SPRITE ARRAYS
     public final Picture[][] sprites = {
@@ -58,7 +59,7 @@ public class Player extends Sprite {
         touchingFloor = false;
         setDrawingPriority(5);
         setPicture(spriteR);
-        System.out.println("Player height: " + getHeight());
+        System.out.println("Player height: " + getY());
         setX(0);
         setY(-getHeight());
         //setY(3928 - 2 * spriteL.getHeight());
@@ -68,7 +69,7 @@ public class Player extends Sprite {
             @Override
             public void run() {
                 if (iteration() % 10 == 0){
-                    if (isRunning && !isJumping && touchingFloor) {
+                    if (isRunning && !isJumping && touchingFloor & !isSwinging) {
                         switch (direction) {
                             case 1 -> {
                                 if (frame > 12) {
@@ -122,7 +123,7 @@ public class Player extends Sprite {
             @Override
             public void run() {
                 if (isJumping) {
-                    GOAL_Y = InitY - JUMP_DIST;
+                    final double GOAL_Y = InitY - JUMP_DIST;
 
                     if (getY() > GOAL_Y) {
                         setVel(getVelX(), -speedY);
@@ -135,6 +136,36 @@ public class Player extends Sprite {
                 }
             }
         });
+
+        ma = new MouseAdapter() {
+            int frame = 0;
+
+            @Override
+            public void mousePressed(MouseEvent me) {
+                isSwinging = true;
+
+                ClockWorker.addTask(new Task() {
+                    public void run() {
+                        if (frame < 3) {
+                            if (iteration() % 40 == 0) {
+                                switch (direction) {
+                                    case 1 -> {
+                                        setPicture(actionSprites[frame++][1]);
+                                    }
+                                    case -1 -> {
+                                        setPicture(actionSprites[frame++][0]);
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            isSwinging = false;
+                        }
+                    }
+                });
+                frame = 0;
+            }
+        };
 
     }
 }

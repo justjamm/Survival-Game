@@ -42,11 +42,11 @@ public class MainCard {
         Player p = new Player(sc.getScene(), sc.getScene().getBackgroundSize());
         sc.getScene().setFocus(p);
 
-        //BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
+        BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
         Ground g = new Ground(sc.getScene(), sc.getScene().getBackgroundSize());
         p.setX(g.getWidth() / 2);
         MovementHandler mh = new MovementHandler(mc, p);
-        sc.addMouseListener(mh.ma);
+        sc.addMouseListener(p.ma);
 
 
         ClockWorker.addTask(sc.moveSprites());

@@ -12,9 +12,6 @@ import java.awt.event.MouseEvent;
 
 public class MovementHandler {
     private Player p;
-    private Ground g;
-    private BackgroundHandler b;
-    public MouseAdapter ma;
 
     public MovementHandler(Card card, Player p) {
         this.p = p;
@@ -30,7 +27,7 @@ public class MovementHandler {
                 else if (!p.touchingFloor && p.getVelY() <= 50) {  // CHECK FOR TERMINAL VELOCITY
                     double vy = p.getVelY() + 0.1;
                     p.setVel(p.getVelX(), vy );
-                    System.out.printf("Y-Velocity: %.1f\n", p.getVelY());
+                    //System.out.printf("Y-Velocity: %.1f\n", p.getVelY());
                 }
                 //System.out.printf("Y-Velocity: %.1f\n", p.getVelY());
             }
@@ -85,12 +82,7 @@ public class MovementHandler {
             }
         }));
 
-        ma = new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent me) {
-                System.out.println("mouse clicked");
-            }
-        };
+
     }
 }
 
