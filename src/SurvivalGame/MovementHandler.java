@@ -17,22 +17,6 @@ public class MovementHandler {
         this.p = p;
 
 
-        // GRAVITY
-        ClockWorker.addTask(new Task() {
-            @Override
-            public void run() {
-                if (p.touchingFloor) {
-                    p.setVel(p.getVelX(), p.getVelY());
-                }
-                else if (!p.touchingFloor && p.getVelY() <= 50) {  // CHECK FOR TERMINAL VELOCITY
-                    double vy = p.getVelY() + 0.1;
-                    p.setVel(p.getVelX(), vy );
-                    //System.out.printf("Y-Velocity: %.1f\n", p.getVelY());
-                }
-                //System.out.printf("Y-Velocity: %.1f\n", p.getVelY());
-            }
-        });
-
         card.addKeyListener(new KeyWrapper(new KeyAdapter() {
 
             // MOVEMENT

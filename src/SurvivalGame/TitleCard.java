@@ -43,7 +43,6 @@ public class TitleCard {
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Start pressed.");
                 mc.showCard();
             }
         });
@@ -54,7 +53,6 @@ public class TitleCard {
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Exit pressed.");
                 f.dispose();
             }
         });

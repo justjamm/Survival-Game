@@ -59,11 +59,24 @@ public class Player extends Sprite {
         touchingFloor = false;
         setDrawingPriority(5);
         setPicture(spriteR);
-        System.out.println("Player height: " + getY());
-        setX(0);
         setY(-getHeight());
         //setY(3928 - 2 * spriteL.getHeight());
 
+        // GRAVITY
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+                if (touchingFloor) {
+                    setVel(getVelX(), getVelY());
+                }
+                else if (!touchingFloor && getVelY() <= 50) {  // CHECK FOR TERMINAL VELOCITY
+                    double vy = getVelY() + 0.1;
+                    setVel(getVelX(), vy );
+                }
+            }
+        });
+
+        // MOVEMENT
         ClockWorker.addTask(new Task() {
             int frame = 0;
             @Override
@@ -118,8 +131,8 @@ public class Player extends Sprite {
             }
         });
 
+        // JUMPING
         ClockWorker.addTask(new Task() {
-
             @Override
             public void run() {
                 if (isJumping) {
@@ -137,6 +150,8 @@ public class Player extends Sprite {
             }
         });
 
+
+        // INTERACTION VIA MOUSE
         ma = new MouseAdapter() {
             int frame = 0;
 
@@ -167,6 +182,25 @@ public class Player extends Sprite {
             }
         };
 
+    }
+
+
+    // BORDER CHECKING
+    public void processEvent(SpriteCollisionEvent ce) {
+        if (ce.eventType == CollisionEventType.WALL) {
+            if (ce.xlo) {
+                setVel(Math.abs(getVelX()), getVelY());
+            }
+            if (ce.xhi) {
+                setVel(-Math.abs(getVelX()), getVelY());
+            }
+            if (ce.ylo) {
+                setVel(getVelX(), Math.abs(getVelY()));
+            }
+            if (ce.yhi) {
+                setVel(getVelX(), -Math.abs(getVelY()));
+            }
+        }
     }
 }
 

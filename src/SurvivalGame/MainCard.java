@@ -13,7 +13,7 @@ public class MainCard {
     private final SpriteComponent sc;
     private final int RANDOM = (int)(Math.random() * 10);
     private Dimension BOARD;
-    private final int NUM_BACKGROUNDS = 6;
+    private final int NUM_BACKGROUNDS = 3;
 
     public MainCard(BasicFrame f) {
         mc = f.getCard();
@@ -48,6 +48,10 @@ public class MainCard {
         MovementHandler mh = new MovementHandler(mc, p);
         sc.addMouseListener(p.ma);
 
+        Zombie z = new Zombie(sc.getScene(), sc.getScene().getBackgroundSize());
+        z.setX(1200);
+        z.setY(400);
+
 
         ClockWorker.addTask(sc.moveSprites());
 
@@ -59,13 +63,6 @@ public class MainCard {
                 p.setVel(p.getVelX(), 0);
 
                 if (!p.isRunning) {
-//                    if (p.isLeft) {
-//                        p.setDrawingPriority(5);
-//                        p.setPicture(p.spriteL);
-//                    } else {
-//                        p.setDrawingPriority(5);
-//                        p.setPicture(p.spriteR);
-//                    }
                     switch (p.direction) {
                         case 1 -> {
                             p.setDrawingPriority(5);
@@ -76,12 +73,12 @@ public class MainCard {
                             p.setPicture(p.spriteL);
                         }
                     }
-                    System.out.println("collision");
                 }
 
         }});
 
     }
+
     public void showCard() {
         mc.showCard();
         mc.requestFocus();
