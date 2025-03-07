@@ -4,8 +4,7 @@ import basicgraphics.*;
 import basicgraphics.images.Picture;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class Player extends Sprite {
     // STILL SPRITES
@@ -13,7 +12,6 @@ public class Player extends Sprite {
     public final Picture spriteR = new Picture("0f.png");
 
     // MOVEMENT BOOLEANS
-    //public boolean isLeft;
     public boolean touchingFloor;
     public volatile boolean isJumping;
     public volatile boolean isRunning = false;
@@ -24,13 +22,15 @@ public class Player extends Sprite {
     private final int speedX = 2;
     private final int speedY = 7;
     public double InitY;
-    private final double JUMP_DIST = spriteL.getWidth() * 3;
+    private final double JUMP_DIST = spriteL.getWidth() * 3.5;
 
-
+    // INTERACTION VARIABLES
     public MouseAdapter ma;
+    public SpriteSpriteCollisionListener gcl;
+    public KeyListener kl;
 
     // SPRITE ARRAYS
-    public final Picture[][] sprites = {
+    public final Picture[][] runningSprites = {
             {new Picture("6.png"), new Picture("6f.png")},
             {new Picture("7.png"), new Picture("7f.png")},
             {new Picture("8.png"), new Picture("8f.png")},
@@ -54,13 +54,14 @@ public class Player extends Sprite {
 
     public Player(Scene scene, Dimension d) {
         super(scene);
-        this.freezeOrientation = true;
-        //isLeft = true;
+        freezeOrientation = true;
         touchingFloor = false;
+        isJumping = false;
+        isSwinging = false;
+        isRunning = false;
         setDrawingPriority(5);
         setPicture(spriteR);
         setY(-getHeight());
-        //setY(3928 - 2 * spriteL.getHeight());
 
         // GRAVITY
         ClockWorker.addTask(new Task() {
@@ -88,7 +89,7 @@ public class Player extends Sprite {
                                 if (frame > 12) {
                                     frame = 0;
                                 }
-                                setPicture(sprites[frame++][1]);
+                                setPicture(runningSprites[frame++][1]);
                                 setVel(speedX, getVelY());
 
                             }
@@ -96,7 +97,7 @@ public class Player extends Sprite {
                                 if (frame > 12) {
                                     frame = 0;
                                 }
-                                setPicture(sprites[frame++][0]);
+                                setPicture(runningSprites[frame++][0]);
                                 setVel(-speedX, getVelY());
                             }
                         }
@@ -182,6 +183,78 @@ public class Player extends Sprite {
             }
         };
 
+        // KEYBOARD INPUT
+        kl = new KeyWrapper(new KeyAdapter() {
+
+            // KEY PRESSED
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                // UP
+                if (ke.getKeyCode() == KeyEvent.VK_W || ke.getKeyCode() == KeyEvent.VK_UP) {
+                    if (touchingFloor) {
+                        isJumping = true;
+                        touchingFloor = false;
+                        InitY = getY();
+                    }
+                }
+
+                // RIGHT
+                else if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    direction = 1;
+                    isRunning = true;
+                }
+
+                // LEFT
+                else if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_LEFT) {
+                    direction = -1;
+                    isRunning = true;
+                }
+            }
+
+            // KEY RELEASED
+            @Override
+            public void keyReleased(KeyEvent ke) {
+                if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    setVel(0, getVelY());
+                    setDrawingPriority(5);
+                    setPicture(spriteR);
+                    isRunning = false;
+                    direction = 1;
+                } else if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_LEFT) {
+                    setVel(0, getVelY());
+                    setDrawingPriority(5);
+                    setPicture(spriteL);
+                    isRunning = false;
+                    direction = -1;
+                } else if (ke.getKeyCode() == KeyEvent.VK_W || ke.getKeyCode() == KeyEvent.VK_UP) {
+                    setVel(getVelX(), 0);
+                    isJumping = false;
+                }
+            }
+        });
+
+        // GROUND COLLISION
+        gcl = new SpriteSpriteCollisionListener<Player, Ground>() {
+            @Override
+            public void collision(Player p, Ground g) {
+                touchingFloor = true;
+                isJumping = false;
+                setVel(getVelX(), 0);
+
+                if (!isRunning) {
+                    switch (direction) {
+                        case 1 -> {
+                            setDrawingPriority(5);
+                            setPicture(spriteR);
+                        }
+                        case -1 -> {
+                            setDrawingPriority(5);
+                            setPicture(spriteL);
+                        }
+                    }
+                }
+            }
+        };
     }
 
 

@@ -25,6 +25,31 @@ public class MainCard {
         mc.setLayout(layout);
         mc.add("x=0,y=0,w=4,h=4", sc);
 
+        sc.getScene().periodic_x = false;
+        sc.getScene().periodic_y = false;
+
+
+        // BACKGROUND AND GROUND
+        BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
+        Ground g = new Ground(sc.getScene(), sc.getScene().getBackgroundSize());
+
+        // PLAYER
+        Player p = new Player(sc.getScene(), sc.getScene().getBackgroundSize());
+        p.setX(g.getWidth() / 2);
+        sc.getScene().setFocus(p);
+        sc.addMouseListener(p.ma);
+        sc.addSpriteSpriteCollisionListener(Player.class, Ground.class, p.gcl);
+        mc.addKeyListener(p.kl);
+
+        // ENEMIES
+        Zombie z = new Zombie(sc.getScene(), sc.getScene().getBackgroundSize());
+        z.setX(1200);
+        z.setY(400);
+        sc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, z.gcl);
+        sc.addSpriteSpriteCollisionListener(Player.class, Zombie.class, z.pcl);
+        ClockWorker.addTask(sc.moveSprites());
+
+
         // When 'esc' pressed, return to TitleCard
         mc.addKeyListener(new KeyWrapper(new KeyAdapter() {
             @Override
@@ -35,48 +60,6 @@ public class MainCard {
                 }
             }
         }));
-
-        sc.getScene().periodic_x = false;
-        sc.getScene().periodic_y = false;
-
-        Player p = new Player(sc.getScene(), sc.getScene().getBackgroundSize());
-        sc.getScene().setFocus(p);
-
-        BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
-        Ground g = new Ground(sc.getScene(), sc.getScene().getBackgroundSize());
-        p.setX(g.getWidth() / 2);
-        MovementHandler mh = new MovementHandler(mc, p);
-        sc.addMouseListener(p.ma);
-
-        Zombie z = new Zombie(sc.getScene(), sc.getScene().getBackgroundSize());
-        z.setX(1200);
-        z.setY(400);
-
-
-        ClockWorker.addTask(sc.moveSprites());
-
-        sc.addSpriteSpriteCollisionListener(Player.class, Ground.class, new SpriteSpriteCollisionListener<Player, Ground>() {
-            @Override
-            public void collision(Player sp1, Ground sp2) {
-                p.touchingFloor = true;
-                p.isJumping = false;
-                p.setVel(p.getVelX(), 0);
-
-                if (!p.isRunning) {
-                    switch (p.direction) {
-                        case 1 -> {
-                            p.setDrawingPriority(5);
-                            p.setPicture(p.spriteR);
-                        }
-                        case -1 -> {
-                            p.setDrawingPriority(5);
-                            p.setPicture(p.spriteL);
-                        }
-                    }
-                }
-
-        }});
-
     }
 
     public void showCard() {
