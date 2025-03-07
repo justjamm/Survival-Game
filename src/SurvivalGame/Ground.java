@@ -27,7 +27,6 @@ public class Ground extends Sprite {
         Picture pi = new Picture(bi);
         setPicture(pi);
         freezeOrientation = true;
-        System.out.println("Ground height: " + getY());
     }
 
 }

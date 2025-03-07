@@ -5,77 +5,100 @@ import basicgraphics.images.Picture;
 
 import java.awt.*;
 
-public class Zombie extends Sprite {
+public class Zombie extends Enemy {
 
     // ANIMATION SPRITES
-    private Picture[][] sprites = {
+    public Picture[][] sprites = {
         {new Picture("zombie0.png"), new Picture("zombie0f.png")},
         {new Picture("zombie1.png"), new Picture("zombie1f.png")},
         {new Picture("zombie2.png"), new Picture("zombie2f.png")}};
 
     // MOVEMENT VARIABLES
     public volatile int direction = -1;
-    private final int speedX = 2;
-    private final int speedY = 7;
+    //private final int speedX = 2;
+    //private final int speedY = 7;
     public boolean touchingFloor;
     public volatile boolean isJumping;
     public volatile boolean isRunning = false;
 
     // INTERACTION VARIABLES
-    public SpriteSpriteCollisionListener gcl;
-    public SpriteSpriteCollisionListener pcl;
+    public SpriteSpriteCollisionListener<Zombie, Ground> GroundCollision;
+
 
     public Zombie(Scene scene, Dimension d) {
         super(scene);
-        freezeOrientation = true;
-        touchingFloor = false;
-        isJumping = false;
-        isRunning = false;
+        this.freezeOrientation = true;
+        this.touchingFloor = false;
+        this.isJumping = false;
+        this.isRunning = false;
 
         setDrawingPriority(4);
         setPicture(sprites[0][0]);
         setY(-getHeight());
 
+        setVel(0, getVelY());
+
         // GROUND COLLISION
-        gcl = new SpriteSpriteCollisionListener<Zombie, Ground>() {
+        GroundCollision = new SpriteSpriteCollisionListener<Zombie, Ground>() {
             @Override
             public void collision(Zombie z, Ground g) {
-                touchingFloor = true;
-                isJumping = false;
+                z.touchingFloor = true;
+                z.isJumping = false;
                 setVel(getVelX(), 0);
 
-                if (!isRunning) {
+                if (!z.isRunning) {
                     switch (direction) {
                         case 1 -> {
                             setDrawingPriority(4);
-                            setPicture(sprites[0][1]);
+                            setPicture(z.sprites[0][1]);
                         }
                         case -1 -> {
                             setDrawingPriority(4);
-                            setPicture(sprites[0][0]);
+                            setPicture(z.sprites[0][0]);
                         }
                     }
                 }
             }
         };
 
-        pcl = new SpriteSpriteCollisionListener<Player, Zombie>() {
-            @Override
-            public void collision(Player p, Zombie z) {
-                System.out.println("Player Zombie Collision!");
-            }
-        };
+
 
         // GRAVITY
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
+
+//                if (iteration() % 100 == 0) {
+//                    System.out.printf("Zombie %s X: %.1f Y: %.1f\n", tag, getX(), getY());
+//                }
+
                 if (touchingFloor) {
                     setVel(getVelX(), getVelY());
                 }
                 else if (!touchingFloor && getVelY() <= 50) {  // CHECK FOR TERMINAL VELOCITY
                     double vy = getVelY() + 0.1;
                     setVel(getVelX(), vy );
+                }
+
+                //System.out.println("Zombie Y: " + getY());
+
+            }
+        });
+
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+                if (getVelX() > 0) direction = 1;
+                else if (getVelX() < 0) direction = -1;
+                switch (direction) {
+                    case 1 -> {
+                        setDrawingPriority(4);
+                        setPicture(sprites[0][1]);
+                    }
+                    case -1 -> {
+                        setDrawingPriority(4);
+                        setPicture(sprites[0][0]);
+                    }
                 }
             }
         });

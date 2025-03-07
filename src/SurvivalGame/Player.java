@@ -26,7 +26,8 @@ public class Player extends Sprite {
 
     // INTERACTION VARIABLES
     public MouseAdapter ma;
-    public SpriteSpriteCollisionListener gcl;
+    public SpriteSpriteCollisionListener<Player, Ground> GroundCollision;
+    public SpriteSpriteCollisionListener<Player, Enemy> EnemyCollision;
     public KeyListener kl;
 
     // SPRITE ARRAYS
@@ -74,6 +75,7 @@ public class Player extends Sprite {
                     double vy = getVelY() + 0.1;
                     setVel(getVelX(), vy );
                 }
+
             }
         });
 
@@ -234,7 +236,7 @@ public class Player extends Sprite {
         });
 
         // GROUND COLLISION
-        gcl = new SpriteSpriteCollisionListener<Player, Ground>() {
+        GroundCollision = new SpriteSpriteCollisionListener<Player, Ground>() {
             @Override
             public void collision(Player p, Ground g) {
                 touchingFloor = true;
@@ -253,6 +255,13 @@ public class Player extends Sprite {
                         }
                     }
                 }
+            }
+        };
+
+        EnemyCollision = new SpriteSpriteCollisionListener<Player, Enemy>() {
+            @Override
+            public void collision(Player p, Enemy z) {
+                setVel(-2 * getVelX(), -0.5 * getVelY());
             }
         };
     }

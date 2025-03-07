@@ -13,6 +13,6 @@ public class  SurvivalGame {
         TitleCard tc = new TitleCard(bf, mc);
         ClockWorker.initialize(5);
         bf.show();
-        tc.showCard();
+        TitleCard.showCard();
     }
 }
