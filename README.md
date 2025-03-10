@@ -10,3 +10,5 @@ The requirements for this project was that it;
 2. Be 1000 lines in length.
 
 The full project requirements can be found [here](https://www.cct.lsu.edu/~sbrandt/csc1351/), aswell as the full course syllabus.
+
+To run the program, make sure you have my source files found in src/SurvivalGame and the basicgraphics package found in src/basicgraphics.
