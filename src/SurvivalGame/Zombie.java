@@ -21,10 +21,6 @@ public class Zombie extends Enemy {
     public volatile boolean isJumping;
     public volatile boolean isRunning = false;
 
-    // INTERACTION VARIABLES
-    public SpriteSpriteCollisionListener<Zombie, Ground> GroundCollision;
-
-
     public Zombie(Scene scene, Dimension d) {
         super(scene);
         this.freezeOrientation = true;
@@ -38,40 +34,11 @@ public class Zombie extends Enemy {
 
         setVel(0, getVelY());
 
-        // GROUND COLLISION
-        GroundCollision = new SpriteSpriteCollisionListener<Zombie, Ground>() {
-            @Override
-            public void collision(Zombie z, Ground g) {
-                z.touchingFloor = true;
-                z.isJumping = false;
-                setVel(getVelX(), 0);
-
-                if (!z.isRunning) {
-                    switch (direction) {
-                        case 1 -> {
-                            setDrawingPriority(4);
-                            setPicture(z.sprites[0][1]);
-                        }
-                        case -1 -> {
-                            setDrawingPriority(4);
-                            setPicture(z.sprites[0][0]);
-                        }
-                    }
-                }
-            }
-        };
-
-
 
         // GRAVITY
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
-
-//                if (iteration() % 100 == 0) {
-//                    System.out.printf("Zombie %s X: %.1f Y: %.1f\n", tag, getX(), getY());
-//                }
-
                 if (touchingFloor) {
                     setVel(getVelX(), getVelY());
                 }
@@ -79,9 +46,6 @@ public class Zombie extends Enemy {
                     double vy = getVelY() + 0.1;
                     setVel(getVelX(), vy );
                 }
-
-                //System.out.println("Zombie Y: " + getY());
-
             }
         });
 
@@ -102,6 +66,5 @@ public class Zombie extends Enemy {
                 }
             }
         });
-
     }
 }

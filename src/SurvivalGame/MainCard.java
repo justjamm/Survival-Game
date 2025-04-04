@@ -7,7 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
-public class MainCard {
+public class  MainCard {
 
     public static Card mc;
     private final SpriteComponent sc;
@@ -29,7 +29,7 @@ public class MainCard {
         sc.getScene().periodic_y = false;
 
 
-        // BACKGROUND AND GROUND
+        // BACKGROUND & GROUND
         BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
         Ground g = new Ground(sc.getScene(), sc.getScene().getBackgroundSize());
 
@@ -38,37 +38,91 @@ public class MainCard {
         p.setX(g.getWidth() / 2);
         sc.getScene().setFocus(p);
         sc.addMouseListener(p.ma);
-        sc.addSpriteSpriteCollisionListener(Player.class, Ground.class, p.GroundCollision);
-        sc.addSpriteSpriteCollisionListener(Player.class, Enemy.class, p.EnemyCollision);
+        sc.addSpriteSpriteCollisionListener(Player.class, Ground.class, new SpriteSpriteCollisionListener<Player, Ground>() {
+            @Override
+            public void collision(Player p, Ground g) {
+                p.touchingFloor = true;
+                p.isJumping = false;
+                p.setVel(p.getVelX(), 0);
+
+                if (!p.isRunning) {
+                    switch (p.direction) {
+                        case 1 -> {
+                            p.setDrawingPriority(5);
+                            p.setPicture(p.spriteR);
+                        }
+                        case -1 -> {
+                            p.setDrawingPriority(5);
+                            p.setPicture(p.spriteL);
+                        }
+                    }
+                }
+            }
+        });
+        sc.addSpriteSpriteCollisionListener(Player.class, Enemy.class, new SpriteSpriteCollisionListener<Player, Enemy>() {
+            @Override
+            public void collision(Player p, Enemy z) {
+                p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+            }
+        });
         mc.addKeyListener(p.kl);
 
         // ENEMIES
+        int initSpawn = 600;
+        Zombie[] zombs = new Zombie[5];
+        for (Zombie z : zombs) {
+            z = new Zombie(sc.getScene(), sc.getScene().getBackgroundSize());
+            z.setX(initSpawn);
+            initSpawn += 400;
+            //zombs[i].setVel(.1 * Math.pow(-1, i), zombs[i].getVelY());
+            z.setVel(.2, z.getVelY());
+            final Zombie z1 = z;
+            ClockWorker.addTask(new Task() {
+                @Override
+                public void run() {
+                    if (z1.getX() > p.getX()) {
+                        z1.setVel(-Math.abs(z1.getVelX()), z1.getVelY());
+                    }
+                    else if (z1.getX() < p.getX()) {
+                        z1.setVel(Math.abs(z1.getVelX()), z1.getVelY());
+                    }
 
-//        Zombie[] zombs = new Zombie[3];
-//        for (int i = 0; i < zombs.length; i++) {
-//            zombs[i] = new Zombie(sc.getScene(), sc.getScene().getBackgroundSize(), Integer.toString(i));
-//            zombs[i].setX(bruh);
-//            bruh += 400;
-//            zombs[i].setVel(.1 * Math.pow(-1, i), zombs[i].getVelY());
-//
-//            sc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, zombs[i].GroundCollision);
-//
-//            System.out.printf("Zombie %s spawned\n", zombs[i].tag);
-//        }
+                }
+            });
 
-        Zombie[] zombs = new Zombie[3];
+        }
 
-        Zombie z = new Zombie(sc.getScene(), sc.getScene().getBackgroundSize());
-        z.setX(1200);
-        z.setVel(-0.1, z.getVelY());
-        sc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, z.GroundCollision);
-        zombs[0] = z;
+        sc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, new SpriteSpriteCollisionListener<Zombie, Ground>() {
+            @Override
+            public void collision (Zombie z, Ground g) {
+                z.touchingFloor = true;
+                z.isJumping = false;
+                z.setVel(z.getVelX(), 0);
 
-        Zombie z1 = new Zombie(sc.getScene(), sc.getScene().getBackgroundSize());
-        z1.setX(1200);
-        z1.setVel(0.1, z1.getVelY());
-        sc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, z1.GroundCollision);
-        zombs[1] = z1;
+                if (!z.isRunning) {
+                    switch (z.direction) {
+                        case 1 -> {
+                            z.setDrawingPriority(4);
+                            z.setPicture(z.sprites[0][1]);
+                        }
+                        case -1 -> {
+                            z.setDrawingPriority(4);
+                            z.setPicture(z.sprites[0][0]);
+                        }
+                    }
+                }
+            }
+        });
+        sc.addSpriteSpriteCollisionListener(Zombie.class, Zombie.class, new SpriteSpriteCollisionListener<Zombie, Zombie>() {
+            @Override
+            public void collision(Zombie z1, Zombie z2) {
+                z1.setX(z1.getX() - z1.direction * z1.getWidth());
+                z1.setVel(-z1.getVelX(), -z1.getVelY());
+
+                z2.setX(z2.getX() - z2.direction * z2.getWidth());
+                z2.setVel(-z2.getVelX(), -z2.getVelY());
+            }
+        });
 
 
 
