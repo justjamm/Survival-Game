@@ -59,16 +59,19 @@ public class  MainCard {
                 }
             }
         });
+
+        // PLAYER-ENEMY COLLISION
         sc.addSpriteSpriteCollisionListener(Player.class, Enemy.class, new SpriteSpriteCollisionListener<Player, Enemy>() {
             @Override
             public void collision(Player p, Enemy z) {
                 p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                p.currentHealth -= RANDOM.nextInt(10, 20);
             }
         });
         mc.addKeyListener(p.kl);
 
         // ENEMIES
-        int initSpawn = 600;
+        int initSpawn = 200;
         Zombie[] zombs = new Zombie[5];
         for (Zombie z : zombs) {
 
@@ -81,20 +84,22 @@ public class  MainCard {
                 @Override
                 public void run() {
                    int detRad = 400; // detection radius of zombies
+
 //                    if (z1.getX() + detRad >= p.getX() || z1.getX() - detRad <= p.getX()) {
 //                        z1.trackingPlayer = true;
 //                        z1.setVel(.5 * Math.random(), z1.getVelY());
 //                    }
                     double pX = p.getX();
                     double zX = z1.getX();
-                    final double zV = Math.random();
+                    final double zV = z1.direction * RANDOM.nextDouble(0.3, 0.7);
+                    z1.setVel(zV, z1.getVelY());
+
                     if ((pX < zX && pX >= zX - detRad) || (zX < pX && zX + detRad >= pX)) {
                         z1.trackingPlayer = true;
-                        z1.setVel(zV, z1.getVelY());
                     }
                     else {
                         z1.trackingPlayer = false;
-                        z1.setVel(-0.5 * zV, z1.getVelY());
+                        z1.setVel(0.5 * z1.getVelX(), z1.getVelY());
                     }
 
                     if (z1.trackingPlayer) {
@@ -105,7 +110,6 @@ public class  MainCard {
                             z1.setVel(-Math.abs(z1.getVelX()), z1.getVelY());
                         }
                     }
-
                 }
             });
 

@@ -24,6 +24,10 @@ public class Player extends Sprite {
     public double InitY;
     private final double JUMP_DIST = spriteL.getWidth() * 3.5;
 
+    // HEALTH
+    int maxHealth;
+    int currentHealth;
+
     // INTERACTION VARIABLES
     public MouseAdapter ma;
     public KeyListener kl;
@@ -58,6 +62,10 @@ public class Player extends Sprite {
         isJumping = false;
         isSwinging = false;
         isRunning = false;
+
+        maxHealth = 100;
+        currentHealth = maxHealth;
+
         setDrawingPriority(5);
         setPicture(spriteR);
         setY(-getHeight());

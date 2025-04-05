@@ -4,6 +4,7 @@ import basicgraphics.*;
 import basicgraphics.images.Picture;
 
 import java.awt.*;
+import java.util.Random;
 
 public class Zombie extends Enemy {
 
@@ -14,7 +15,7 @@ public class Zombie extends Enemy {
         {new Picture("zombie2.png"), new Picture("zombie2f.png")}};
 
     // MOVEMENT VARIABLES
-    public volatile int direction = -1;
+    public volatile int direction;
     //private final int speedX = 2;
     //private final int speedY = 7;
     public boolean touchingFloor;
@@ -24,6 +25,9 @@ public class Zombie extends Enemy {
 
     public Zombie(Scene scene, Dimension d) {
         super(scene);
+
+        if (Math.random() >= 0.5) this.direction = 1;
+        else this.direction = -1;
         this.freezeOrientation = true;
         this.touchingFloor = false;
         this.isJumping = false;
@@ -31,7 +35,8 @@ public class Zombie extends Enemy {
         this.trackingPlayer = false;
 
         setDrawingPriority(4);
-        setPicture(sprites[0][0]);
+        if (this.direction == 1) setPicture(sprites[0][1]);
+        else setPicture(sprites[0][0]);
         setY(-getHeight());
 
         setVel(0, getVelY());
