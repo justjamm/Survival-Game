@@ -19,7 +19,8 @@ public class Zombie extends Enemy {
     //private final int speedY = 7;
     public boolean touchingFloor;
     public volatile boolean isJumping;
-    public volatile boolean isRunning = false;
+    public volatile boolean isRunning;
+    public volatile boolean trackingPlayer;
 
     public Zombie(Scene scene, Dimension d) {
         super(scene);
@@ -27,6 +28,7 @@ public class Zombie extends Enemy {
         this.touchingFloor = false;
         this.isJumping = false;
         this.isRunning = false;
+        this.trackingPlayer = false;
 
         setDrawingPriority(4);
         setPicture(sprites[0][0]);

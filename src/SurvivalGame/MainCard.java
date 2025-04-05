@@ -71,20 +71,39 @@ public class  MainCard {
         int initSpawn = 600;
         Zombie[] zombs = new Zombie[5];
         for (Zombie z : zombs) {
+
             z = new Zombie(sc.getScene(), sc.getScene().getBackgroundSize());
             z.setX(initSpawn);
             initSpawn += 400;
-            //zombs[i].setVel(.1 * Math.pow(-1, i), zombs[i].getVelY());
-            z.setVel(.2, z.getVelY());
+
             final Zombie z1 = z;
             ClockWorker.addTask(new Task() {
                 @Override
                 public void run() {
-                    if (z1.getX() > p.getX()) {
-                        z1.setVel(-Math.abs(z1.getVelX()), z1.getVelY());
+                   int detRad = 400; // detection radius of zombies
+//                    if (z1.getX() + detRad >= p.getX() || z1.getX() - detRad <= p.getX()) {
+//                        z1.trackingPlayer = true;
+//                        z1.setVel(.5 * Math.random(), z1.getVelY());
+//                    }
+                    double pX = p.getX();
+                    double zX = z1.getX();
+                    final double zV = Math.random();
+                    if ((pX < zX && pX >= zX - detRad) || (zX < pX && zX + detRad >= pX)) {
+                        z1.trackingPlayer = true;
+                        z1.setVel(zV, z1.getVelY());
                     }
-                    else if (z1.getX() < p.getX()) {
-                        z1.setVel(Math.abs(z1.getVelX()), z1.getVelY());
+                    else {
+                        z1.trackingPlayer = false;
+                        z1.setVel(-0.5 * zV, z1.getVelY());
+                    }
+
+                    if (z1.trackingPlayer) {
+                        if (z1.getX() < p.getX()) {
+                            z1.setVel(Math.abs(z1.getVelX()), z1.getVelY());
+                        }
+                        else if (p.getX() < z1.getX()) {
+                            z1.setVel(-Math.abs(z1.getVelX()), z1.getVelY());
+                        }
                     }
 
                 }
@@ -92,6 +111,7 @@ public class  MainCard {
 
         }
 
+        // ZOMBIE-GROUND COLLISION
         sc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, new SpriteSpriteCollisionListener<Zombie, Ground>() {
             @Override
             public void collision (Zombie z, Ground g) {
@@ -113,14 +133,24 @@ public class  MainCard {
                 }
             }
         });
+
+        // ZOMBIE-ZOMBIE COLLISION
         sc.addSpriteSpriteCollisionListener(Zombie.class, Zombie.class, new SpriteSpriteCollisionListener<Zombie, Zombie>() {
             @Override
             public void collision(Zombie z1, Zombie z2) {
-                z1.setX(z1.getX() - z1.direction * z1.getWidth());
-                z1.setVel(-z1.getVelX(), -z1.getVelY());
+//                double x1 = z1.getX(), x2 = z2.getX(), v1 = z1.getVelX(), v2 = z2.getVelX();
+//
+//                z1.setVel(-v1, z1.getVelY());
+//                z2.setVel(-v2, z2.getVelY());
+//
+//                if (x1 < x2) {
+//                    z2.setX(x2 + z1.getWidth());
+//                }
+//                else if (x2 < x1) {
+//                    z1.setX(x1 + z1.getWidth());
+//                }
 
-                z2.setX(z2.getX() - z2.direction * z2.getWidth());
-                z2.setVel(-z2.getVelX(), -z2.getVelY());
+                z1.setVel(0, z1.getVelY());
             }
         });
 
