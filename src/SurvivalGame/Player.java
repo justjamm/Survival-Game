@@ -5,33 +5,11 @@ import basicgraphics.images.Picture;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Random;
 
-public class Player extends Sprite {
-    // STILL SPRITES
+public class Player extends Entity {
     public final Picture spriteL = new Picture("0.png");
     public final Picture spriteR = new Picture("0f.png");
-
-    // MOVEMENT BOOLEANS
-    public boolean touchingFloor;
-    public volatile boolean isJumping;
-    public volatile boolean isRunning = false;
-    public volatile boolean isSwinging = false;
-
-    // MOVEMENT VARIABLES
-    public volatile int direction = -1;
-    private final int speedX = 2;
-    private final int speedY = 7;
-    public double InitY;
-    private final double JUMP_DIST = spriteL.getWidth() * 3.5;
-
-    // HEALTH
-    int maxHealth;
-    int currentHealth;
-
-    // INTERACTION VARIABLES
-    public MouseAdapter ma;
-    public KeyListener kl;
-
     // SPRITE ARRAYS
     public final Picture[][] runningSprites = {
             {new Picture("6.png"), new Picture("6f.png")},
@@ -52,19 +30,36 @@ public class Player extends Sprite {
             {new Picture("2.png"), new Picture("2f.png")},
             {new Picture("3.png"), new Picture("3f.png")},
             {new Picture("4.png"), new Picture("4f.png")},};
-    public final Picture[] jumpingSprites = {new Picture("5.png"), new Picture("5f.png")};
+    public final Picture[] jumpingSprites = {
+            new Picture("5.png"), new Picture("5f.png")};
+
+    public volatile boolean isSwinging;
+    public double InitY;
+    private final double JUMP_DIST = spriteL.getWidth() * 3.5;
+    public String name;
+    public MouseAdapter ma;
+    public KeyListener kl;
 
 
-    public Player(Scene scene, Dimension d) {
+    public Player(Scene scene) {
         super(scene);
+
+        tag = "Player";
+
         freezeOrientation = true;
         touchingFloor = false;
         isJumping = false;
         isSwinging = false;
         isRunning = false;
 
-        maxHealth = 100;
+        direction = -1;
+        speedX = 2;
+        speedY = 7;
+
+        maxHealth = 300;
         currentHealth = maxHealth;
+
+        name = "Default";
 
         setDrawingPriority(5);
         setPicture(spriteR);
@@ -242,8 +237,7 @@ public class Player extends Sprite {
         });
     }
 
-
-    // BORDER CHECKING
+    @Override
     public void processEvent(SpriteCollisionEvent ce) {
         if (ce.eventType == CollisionEventType.WALL) {
             if (ce.xlo) {
@@ -259,6 +253,16 @@ public class Player extends Sprite {
                 setVel(getVelX(), -Math.abs(getVelY()));
             }
         }
+    }
+
+    @Override
+    public int giveDamage() {
+        Random rand = new Random();
+        return rand.nextInt(20, 40);
+    }
+
+    public double getXPos() {
+        return getX();
     }
 }
 

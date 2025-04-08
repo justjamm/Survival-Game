@@ -8,31 +8,25 @@ import java.util.Random;
 
 public class Zombie extends Enemy {
 
-    // ANIMATION SPRITES
-    public Picture[][] sprites = {
-        {new Picture("zombie0.png"), new Picture("zombie0f.png")},
-        {new Picture("zombie1.png"), new Picture("zombie1f.png")},
-        {new Picture("zombie2.png"), new Picture("zombie2f.png")}};
-
-    // MOVEMENT VARIABLES
-    public volatile int direction;
-    //private final int speedX = 2;
-    //private final int speedY = 7;
-    public boolean touchingFloor;
-    public volatile boolean isJumping;
-    public volatile boolean isRunning;
-    public volatile boolean trackingPlayer;
-
-    public Zombie(Scene scene, Dimension d) {
+    public Zombie(Scene scene, Player p) {
         super(scene);
+
+        sprites = new Picture[][]{
+                {new Picture("zombie0.png"), new Picture("zombie0f.png")},
+                {new Picture("zombie1.png"), new Picture("zombie1f.png")},
+                {new Picture("zombie2.png"), new Picture("zombie2f.png")}};
 
         if (Math.random() >= 0.5) this.direction = 1;
         else this.direction = -1;
-        this.freezeOrientation = true;
-        this.touchingFloor = false;
-        this.isJumping = false;
-        this.isRunning = false;
-        this.trackingPlayer = false;
+
+        Random rand = new Random();
+        speedX = direction * rand.nextDouble(0.3, 0.7);
+        speedY = 7;
+        detRad = 400;
+
+        damage = 14;
+        maxHealth = 45;
+        currentHealth = maxHealth;
 
         setDrawingPriority(4);
         if (this.direction == 1) setPicture(sprites[0][1]);
@@ -40,7 +34,6 @@ public class Zombie extends Enemy {
         setY(-getHeight());
 
         setVel(0, getVelY());
-
 
         // GRAVITY
         ClockWorker.addTask(new Task() {
@@ -56,20 +49,33 @@ public class Zombie extends Enemy {
             }
         });
 
+
+        // PLAYER DETECTION
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
-                if (getVelX() > 0) direction = 1;
-                else if (getVelX() < 0) direction = -1;
-                switch (direction) {
-                    case 1 -> {
-                        setDrawingPriority(4);
-                        setPicture(sprites[0][1]);
+                double pX = p.getX();
+                double zX = getX();
+                setVel(speedX, getVelY());
+
+                if ((pX < zX && pX >= zX - detRad) || (zX < pX && zX + detRad >= pX)) {
+                    trackingPlayer = true;
+                }
+                else {
+                    trackingPlayer = false;
+
+                }
+
+                if (trackingPlayer) {
+                    if (zX < pX) {
+                        setVel(Math.abs(getVelX()), getVelY());
                     }
-                    case -1 -> {
-                        setDrawingPriority(4);
-                        setPicture(sprites[0][0]);
+                    else if (pX < zX) {
+                        setVel(-Math.abs(getVelX()), getVelY());
                     }
+                }
+                else {
+                    setVel(0.3 * direction * speedX, getVelY());
                 }
             }
         });
