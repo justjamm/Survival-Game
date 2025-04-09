@@ -261,6 +261,28 @@ public class Player extends Entity {
         return rand.nextInt(20, 40);
     }
 
+    @Override
+    public void takeDamage(int damage) {
+        iter = 0;
+
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+                if (iter == damageCooldown) {
+                    currentHealth -= damage;
+                    System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
+                    if (currentHealth <= 0) {
+                        BasicDialog.getOK("You died! Press Ok to restart.");
+                        BasicFrame.getFrame().dispose();
+                        System.exit(0);
+                    }
+                    this.setFinished();
+                }
+                else iter++;
+            }
+        });
+    }
+
     public double getXPos() {
         return getX();
     }

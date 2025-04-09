@@ -63,6 +63,7 @@ public class TitleCard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 f.dispose();
+                System.exit(0);
             }
         });
         card.add("Button2", exit);
