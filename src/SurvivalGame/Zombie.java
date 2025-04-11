@@ -7,9 +7,20 @@ import java.awt.*;
 import java.util.Random;
 
 public class Zombie extends Enemy {
+    public Picture[][] sprites;
+    public volatile boolean trackingPlayer;
+    public int damage;
+    public int detRad;
+
 
     public Zombie(Scene scene, Player p) {
         super(scene);
+
+        this.freezeOrientation = true;
+        this.touchingFloor = false;
+        this.isJumping = false;
+        this.isRunning = false;
+        this.trackingPlayer = false;
 
         sprites = new Picture[][]{
                 {new Picture("zombie0.png"), new Picture("zombie0f.png")},
@@ -108,12 +119,22 @@ public class Zombie extends Enemy {
     @Override
     public void processEvent(SpriteCollisionEvent ce) {
         if (ce.eventType == CollisionEventType.WALL) {
-            if (ce.xlo || ce.xhi) {
+            if (ce.xlo) {
                 setVel(-getVelX(), getVelY());
             }
-            if (ce.ylo || ce.yhi) {
+            if (ce.xhi)
+                setVel(-getVelX(), getVelY());
+            if (ce.ylo) {
+                setVel(getVelX(), -getVelY());
+            }
+            if (ce.yhi) {
                 setVel(getVelX(), -getVelY());
             }
         }
+    }
+
+    @Override
+    public int giveDamage() {
+        return damage;
     }
 }

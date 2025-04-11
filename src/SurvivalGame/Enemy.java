@@ -3,13 +3,16 @@ package SurvivalGame;
 import basicgraphics.*;
 import basicgraphics.images.Picture;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Random;
 
 public class Enemy extends Entity {
     public volatile boolean trackingPlayer;
-    public Picture[][] sprites;
     public int damage;
     public int detRad;
+
+    public MouseListener ml;
 
     public Enemy(Scene scene) {
         super(scene);
@@ -20,10 +23,5 @@ public class Enemy extends Entity {
         this.isRunning = false;
         this.trackingPlayer = false;
         this.direction = -1;
-    }
-
-    @Override
-    public int giveDamage() {
-        return damage;
     }
 }

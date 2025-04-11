@@ -40,6 +40,9 @@ public class Player extends Entity {
     public MouseAdapter ma;
     public KeyListener kl;
 
+    private final Random RAND = new Random();
+    public int damage;
+
 
     public Player(Scene scene) {
         super(scene);
@@ -85,14 +88,17 @@ public class Player extends Entity {
             int frame = 0;
             @Override
             public void run() {
+
                 if (iteration() % 10 == 0){
-                    if (isRunning && !isJumping && touchingFloor & !isSwinging) {
+                    if (isRunning && !isJumping && touchingFloor) {
                         switch (direction) {
                             case 1 -> {
                                 if (frame > 12) {
                                     frame = 0;
                                 }
-                                setPicture(runningSprites[frame++][1]);
+                                if (!isSwinging) {
+                                    setPicture(runningSprites[frame++][1]);
+                                }
                                 setVel(speedX, getVelY());
 
                             }
@@ -100,7 +106,9 @@ public class Player extends Entity {
                                 if (frame > 12) {
                                     frame = 0;
                                 }
-                                setPicture(runningSprites[frame++][0]);
+                                if (!isSwinging) {
+                                    setPicture(runningSprites[frame++][0]);
+                                }
                                 setVel(-speedX, getVelY());
                             }
                         }
@@ -157,32 +165,46 @@ public class Player extends Entity {
 
         // INTERACTION VIA MOUSE
         ma = new MouseAdapter() {
-            int frame = 0;
 
             @Override
-            public void mousePressed(MouseEvent me) {
+            public void mouseClicked(MouseEvent me) {
                 isSwinging = true;
 
                 ClockWorker.addTask(new Task() {
+                    int frame = 0;
+                    final int INCR = 5;
+
+                    @Override
                     public void run() {
-                        if (frame < 3) {
-                            if (iteration() % 40 == 0) {
+                        if (iteration() > 4 * INCR) {
+                            isSwinging = false;
+                            this.setFinished();
+                        }
+                        else {
+                            if (iteration() % INCR == 0) {
                                 switch (direction) {
                                     case 1 -> {
-                                        setPicture(actionSprites[frame++][1]);
+                                        if (frame > 3) {
+                                            frame = 0;
+                                        }
+                                        else {
+                                            if (touchingFloor) setPicture(actionSprites[frame++][1]);
+                                        }
+
                                     }
                                     case -1 -> {
-                                        setPicture(actionSprites[frame++][0]);
+                                        if (frame > 3) {
+                                            frame = 0;
+                                        }
+                                        else {
+                                            if (touchingFloor) setPicture(actionSprites[frame++][0]);
+                                        }
                                     }
                                 }
                             }
                         }
-                        else {
-                            isSwinging = false;
-                        }
                     }
                 });
-                frame = 0;
             }
         };
 
@@ -250,15 +272,26 @@ public class Player extends Entity {
                 setVel(getVelX(), Math.abs(getVelY()));
             }
             if (ce.yhi) {
-                setVel(getVelX(), -Math.abs(getVelY()));
+                BasicDialog.getOK("You fell out the world! Press OK to restart.");
+                BasicFrame.getFrame().dispose();
+                System.exit(0);
             }
         }
     }
 
     @Override
     public int giveDamage() {
-        Random rand = new Random();
-        return rand.nextInt(20, 40);
+
+        damage = RAND.nextInt(5, 10);
+        if (damage == 10) {
+            System.out.println("Critical Hit!");
+            System.out.println("Hit for " + damage);
+        }
+        else {
+            System.out.println("Hit for " + damage);
+
+        }
+        return damage;
     }
 
     @Override
@@ -272,7 +305,7 @@ public class Player extends Entity {
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
-                        BasicDialog.getOK("You died! Press Ok to restart.");
+                        BasicDialog.getOK("You died! Press OK to restart.");
                         BasicFrame.getFrame().dispose();
                         System.exit(0);
                     }
@@ -285,6 +318,7 @@ public class Player extends Entity {
 
     public double getXPos() {
         return getX();
+
     }
 }
 
