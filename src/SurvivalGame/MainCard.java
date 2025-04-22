@@ -70,13 +70,7 @@ public class  MainCard {
         System.out.println();
 
         // PLAYER-ENEMY COLLISION
-        sc.addSpriteSpriteCollisionListener(Player.class, Enemy.class, new SpriteSpriteCollisionListener<Player, Enemy>() {
-            @Override
-            public void collision(Player p, Enemy e) {
-                //p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
-                p.takeDamage(e.giveDamage());
-            }
-        });
+
         mc.addKeyListener(p.kl);
 
 
@@ -133,6 +127,13 @@ public class  MainCard {
             });
 
         }
+        sc.addSpriteSpriteCollisionListener(Player.class, Zombie.class, new SpriteSpriteCollisionListener<Player, Zombie>() {
+            @Override
+            public void collision(Player p, Zombie z) {
+                //p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                p.takeDamage(z.giveDamage());
+            }
+        });
 
         // ZOMBIE-GROUND COLLISION
         sc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, new SpriteSpriteCollisionListener<Zombie, Ground>() {
@@ -186,8 +187,19 @@ public class  MainCard {
                     }
                 }
             });
-
         }
+        sc.addSpriteSpriteCollisionListener(Player.class, DemonEye.class, new SpriteSpriteCollisionListener<Player, DemonEye>() {
+            @Override
+            public void collision(Player p, DemonEye de) {
+                //p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                if (!de.hitPlayer) {
+                    p.takeDamage(de.giveDamage());
+                    de.hitPlayer = true;
+                }
+            }
+        });
+
+
 
 
 

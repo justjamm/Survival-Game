@@ -10,6 +10,7 @@ public class DemonEye extends Enemy {
     public Picture[] sprites;
     public volatile boolean hitPlayer;
     public int heading;
+    public int abs_heading = heading;
     public volatile boolean trackingPlayer;
     public int damage;
     public int detRad;
@@ -73,21 +74,29 @@ public class DemonEye extends Enemy {
                 // only x coord checking, implement y later
                 if (((pX < X && pX >= X - detRad) || (X < pX && X + detRad >= pX)) && !hitPlayer) {
                     trackingPlayer = true;
+                    if (tag.equals("Demon Eye 1")) System.out.println("trackingPlayer");
                 }
                 else {
                     trackingPlayer = false;
                 }
+                if (hitPlayer && ((pX + 400 < X) || (X < pX - 400))) {
+                    if  ((p.direction == -1 && (abs_heading < 90 && abs_heading >= 0 || abs_heading >= 270 && abs_heading < 360)) ||
+                        ((p.direction == 1 && (abs_heading >= 90 && abs_heading < 270)))) {
+                        hitPlayer = false;
+                    }
+                }
+
 
                 if (trackingPlayer) {
                     if (X < pX) {
-                        if (heading != 180) {
-                            rotate (180 - heading);
+                        if (abs_heading != 180) {
+                            rotate (180 - abs_heading);
                         }
                         setVel(speedX, speedY);
                     }
                     else if (pX < X) {
-                        if (heading != 0 || heading != 360) {
-                            rotate (0 - heading);
+                        if (abs_heading != 0 || abs_heading != 360) {
+                            rotate (0 - abs_heading);
                         }
                         setVel(-speedX, speedY);
                     }
@@ -107,78 +116,13 @@ public class DemonEye extends Enemy {
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {;
-
-                if (heading == 0) {
-                    setPicture(sprites[0]);
+                if (heading >= 360) {
+                    abs_heading = heading % 360;
+                    setPicture(sprites[abs_heading / 30]);
                 }
-                else if (heading == 30) {
-                    setPicture(sprites[1]);
-                }
-                else if (heading == 60) {
-                    setPicture(sprites[2]);
-                }
-                else if (heading == 90) {
-                    setPicture(sprites[3]);
-                }
-                else if (heading == 120) {
-                    setPicture(sprites[4]);
-                }
-                else if (heading == 150) {
-                    setPicture(sprites[5]);
-                }
-                else if (heading == 180) {
-                    setPicture(sprites[6]);
-                }
-                else if (heading == 210) {
-                    setPicture(sprites[7]);
-                }
-                else if (heading == 240) {
-                    setPicture(sprites[8]);
-                }
-                else if (heading == 270) {
-                    setPicture(sprites[9]);
-                }
-                else if (heading == 300) {
-                    setPicture(sprites[10]);
-                }
-                else if (heading == 340) {
-                    setPicture(sprites[11]);
-                }
-                else if (heading == 360) {
-                    setPicture(sprites[0]);
-                }
-                else if (0 < heading && heading < 30) {
-                    setPicture(sprites[0]);
-                }
-                else if (30 < heading && heading < 60) {
-                    setPicture(sprites[1]);
-                }
-                else if (40 < heading && heading < 90) {
-                    setPicture(sprites[2]);
-                }
-                else if (90 < heading && heading < 120) {
-                    setPicture(sprites[3]);
-                }
-                else if (120 < heading && heading < 150) {
-                    setPicture(sprites[4]);
-                }
-                else if (150 < heading && heading < 180) {
-                    setPicture(sprites[5]);
-                }
-                else if (180 < heading && heading < 240) {
-                    setPicture(sprites[6]);
-                }
-                else if (240 < heading && heading < 270) {
-                    setPicture(sprites[7]);
-                }
-                else if (270 < heading && heading < 290) {
-                    setPicture(sprites[8]);
-                }
-                else if (290 < heading && heading < 310) {
-                    setPicture(sprites[9]);
-                }
-                else if (310 < heading && heading < 360) {
-                    setPicture(sprites[10]);
+                else {
+                    abs_heading = heading;
+                    setPicture(sprites[heading / 30]);
                 }
             }
         });
