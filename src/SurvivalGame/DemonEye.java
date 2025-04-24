@@ -48,7 +48,7 @@ public class DemonEye extends Enemy {
         currentHealth = maxHealth;
         detRad = 800;
 
-        speedX = 2;
+        speedX = 1;
         speedY = 0;
         heading = 0;
         setDrawingPriority(4);
@@ -63,7 +63,9 @@ public class DemonEye extends Enemy {
             public void run() {
 
 
-                //System.out.println(tag + " heaidng: " + heading);
+                if (tag.equals("Demon Eye 1")) {
+                    System.out.println(tag + " heading: " + heading);
+                }
 
 
                 double pX = p.getX();
@@ -74,12 +76,13 @@ public class DemonEye extends Enemy {
                 // only x coord checking, implement y later
                 if (((pX < X && pX >= X - detRad) || (X < pX && X + detRad >= pX)) && !hitPlayer) {
                     trackingPlayer = true;
-                    if (tag.equals("Demon Eye 1")) System.out.println("trackingPlayer");
                 }
                 else {
                     trackingPlayer = false;
                 }
-                if (hitPlayer && ((pX + 400 < X) || (X < pX - 400))) {
+
+                // THIS IS BUGGED - FIX LTR SKTR
+                if (hitPlayer && ((pX + detRad < X) || (X < pX - detRad))) {
                     if  ((p.direction == -1 && (abs_heading < 90 && abs_heading >= 0 || abs_heading >= 270 && abs_heading < 360)) ||
                         ((p.direction == 1 && (abs_heading >= 90 && abs_heading < 270)))) {
                         hitPlayer = false;
@@ -122,7 +125,7 @@ public class DemonEye extends Enemy {
                 }
                 else {
                     abs_heading = heading;
-                    setPicture(sprites[heading / 30]);
+                    setPicture(sprites[abs_heading / 30]);
                 }
             }
         });
