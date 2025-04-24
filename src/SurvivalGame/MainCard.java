@@ -1,8 +1,8 @@
 package SurvivalGame;
 
 import basicgraphics.*;
+import basicgraphics.images.Picture;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class  MainCard {
 
     public static Card mc;
-    private final SpriteComponent sc;
+    private final SpriteComponent Entitysc;
     private final Random RANDOM = new Random();
     private Dimension BOARD;
     private final int NUM_BACKGROUNDS = 3;
@@ -19,27 +19,26 @@ public class  MainCard {
     public MainCard(BasicFrame f) {
         mc = f.getCard();
         BOARD = new Dimension (500,500);//f.FRAME_SIZE;
-        sc = new SpriteComponent();
-        sc.setPreferredSize(BOARD);
-        sc.getScene().setBackgroundSize(new Dimension(1200 * NUM_BACKGROUNDS,3928));
+        Entitysc = new SpriteComponent();
+        Entitysc.setPreferredSize(BOARD);
+        Entitysc.getScene().setBackgroundSize(new Dimension(1200 * NUM_BACKGROUNDS,3928));
         BasicLayout layout = new BasicLayout();
         mc.setLayout(layout);
-        mc.add("x=0,y=0,w=4,h=4", sc);
+        mc.add("x=0,y=0,w=4,h=4", Entitysc);
 
-        sc.getScene().periodic_x = false;
-        sc.getScene().periodic_y = false;
-
+        Entitysc.getScene().periodic_x = false;
+        Entitysc.getScene().periodic_y = false;
 
         // BACKGROUND & GROUND
-        BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
-        Ground g = new Ground(sc.getScene(), sc.getScene().getBackgroundSize());
+        BackgroundHandler bgh = new BackgroundHandler(Entitysc.getScene(), Entitysc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
+        Ground g = new Ground(Entitysc.getScene(), Entitysc.getScene().getBackgroundSize());
 
         // PLAYER
-        Player p = new Player(sc.getScene());
+        Player p = new Player(Entitysc.getScene());
         p.setX(g.getWidth() / 2);
-        sc.getScene().setFocus(p);
-        sc.addMouseListener(p.ma);
-        sc.addSpriteSpriteCollisionListener(Player.class, Ground.class, new SpriteSpriteCollisionListener<Player, Ground>() {
+        Entitysc.getScene().setFocus(p);
+        Entitysc.addMouseListener(p.ma);
+        Entitysc.addSpriteSpriteCollisionListener(Player.class, Ground.class, new SpriteSpriteCollisionListener<Player, Ground>() {
             @Override
             public void collision(Player p, Ground g) {
                 p.touchingFloor = true;
@@ -83,12 +82,12 @@ public class  MainCard {
         int enemyTag = 0;
         Zombie[] zombs = new Zombie[5];
         for (Zombie z : zombs) {
-            z = new Zombie(sc.getScene(), p);
+            z = new Zombie(Entitysc.getScene(), p);
             z.setX(initSpawn);
             z.tag = String.format("Zombie %d", enemyTag++);
             initSpawn += 400;
             Zombie finalZ = z;
-            sc.addMouseListener(new MouseAdapter() {
+            Entitysc.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
@@ -127,7 +126,7 @@ public class  MainCard {
             });
 
         }
-        sc.addSpriteSpriteCollisionListener(Player.class, Zombie.class, new SpriteSpriteCollisionListener<Player, Zombie>() {
+        Entitysc.addSpriteSpriteCollisionListener(Player.class, Zombie.class, new SpriteSpriteCollisionListener<Player, Zombie>() {
             @Override
             public void collision(Player p, Zombie z) {
                 //p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
@@ -136,7 +135,7 @@ public class  MainCard {
         });
 
         // ZOMBIE-GROUND COLLISION
-        sc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, new SpriteSpriteCollisionListener<Zombie, Ground>() {
+        Entitysc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, new SpriteSpriteCollisionListener<Zombie, Ground>() {
             @Override
             public void collision (Zombie z, Ground g) {
                 z.touchingFloor = true;
@@ -159,7 +158,7 @@ public class  MainCard {
         });
 
         // ZOMBIE-ZOMBIE COLLISION
-        sc.addSpriteSpriteCollisionListener(Zombie.class, Zombie.class, new SpriteSpriteCollisionListener<Zombie, Zombie>() {
+        Entitysc.addSpriteSpriteCollisionListener(Zombie.class, Zombie.class, new SpriteSpriteCollisionListener<Zombie, Zombie>() {
             @Override
             public void collision(Zombie z1, Zombie z2) {
                 z1.setVel(0, z1.getVelY());
@@ -171,24 +170,30 @@ public class  MainCard {
         enemyTag = 0;
         DemonEye[] eyes = new DemonEye[3];
         for (DemonEye eye : eyes) {
-            eye = new DemonEye(sc.getScene(), p);
+            eye = new DemonEye(Entitysc.getScene(), p);
             eye.setX(initSpawn);
             eye.tag = String.format("Demon Eye %d", enemyTag++);
             initSpawn += 400;
 
             DemonEye finalZ = eye;
-            sc.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    if ((e.getX() + finalZ.getWidth() >= finalZ.getX() || e.getX() - finalZ.getWidth() <= finalZ.getX()) && (e.getY() + finalZ.getWidth() >= finalZ.getY() || e.getY() - finalZ.getHeight() <= finalZ.getY())) {
-                        finalZ.takeDamage(p.giveDamage());
-                        System.out.println("Mouse Position X: " + e.getX() + " Y: " + e.getY());
-                    }
-                }
-            });
+//            Entitysc.addMouseListener(new MouseAdapter() {
+//                @Override
+//                public void mouseClicked(MouseEvent e) {
+//                    super.mouseClicked(e);
+//
+//
+//                    // fix this logic
+//                    if ((e.getX() + finalZ.getWidth() >= finalZ.getX() || e.getX() - finalZ.getWidth() <= finalZ.getX()) && (e.getY() + finalZ.getWidth() >= finalZ.getY() || e.getY() - finalZ.getHeight() <= finalZ.getY())) {
+//
+//                        finalZ.takeDamage(p.giveDamage());
+//                        //System.out.println("Mouse Position X: " + e.getX() + " Y: " + e.getY());
+//                    }
+//                }
+//            });
         }
-        sc.addSpriteSpriteCollisionListener(Player.class, DemonEye.class, new SpriteSpriteCollisionListener<Player, DemonEye>() {
+
+
+        Entitysc.addSpriteSpriteCollisionListener(Player.class, DemonEye.class, new SpriteSpriteCollisionListener<Player, DemonEye>() {
             @Override
             public void collision(Player p, DemonEye de) {
                 //p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
@@ -199,12 +204,18 @@ public class  MainCard {
             }
         });
 
+        Sprite test = new Sprite(Entitysc.getScene());
+        test.setDrawingPriority(9);
+        test.setPicture(new Picture("sarah.png"));
+        test.setX(800);
+        test.setY(400);
 
 
 
 
 
-        ClockWorker.addTask(sc.moveSprites());
+
+        ClockWorker.addTask(Entitysc.moveSprites());
 
 
         // When 'esc' pressed, return to TitleCard

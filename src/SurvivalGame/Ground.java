@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 
 public class Ground extends Sprite {
     final int SCALE = 50;
-    final int WIDTH = 2000;
+    final int WIDTH = 4000;
     final int HEIGHT = 500;
 
     public Ground(Scene s, Dimension d) {

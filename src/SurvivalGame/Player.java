@@ -72,6 +72,9 @@ public class Player extends Entity {
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
+
+                //System.out.println(getY());
+
                 if (touchingFloor) {
                     setVel(getVelX(), getVelY());
                 }

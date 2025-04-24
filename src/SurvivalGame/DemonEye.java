@@ -2,7 +2,9 @@ package SurvivalGame;
 
 import basicgraphics.*;
 import basicgraphics.images.Picture;
+import org.w3c.dom.ls.LSOutput;
 
+import java.awt.event.MouseEvent;
 import java.util.Random;
 
 public class DemonEye extends Enemy {
@@ -63,9 +65,9 @@ public class DemonEye extends Enemy {
             public void run() {
 
 
-                if (tag.equals("Demon Eye 1")) {
-                    System.out.println(tag + " heading: " + heading);
-                }
+//                if (tag.equals("Demon Eye 1")) {
+//                    System.out.println(tag + " heading: " + heading);
+//                }
 
 
                 double pX = p.getX();
@@ -83,8 +85,8 @@ public class DemonEye extends Enemy {
 
                 // THIS IS BUGGED - FIX LTR SKTR
                 if (hitPlayer && ((pX + detRad < X) || (X < pX - detRad))) {
-                    if  ((p.direction == -1 && (abs_heading < 90 && abs_heading >= 0 || abs_heading >= 270 && abs_heading < 360)) ||
-                        ((p.direction == 1 && (abs_heading >= 90 && abs_heading < 270)))) {
+                    if  ((p.direction == 1 && (abs_heading < 90 && abs_heading >= 0 || abs_heading >= 270 && abs_heading < 360)) ||
+                        ((p.direction == -1 && (abs_heading >= 90 && abs_heading < 270)))) {
                         hitPlayer = false;
                     }
                 }
@@ -93,13 +95,15 @@ public class DemonEye extends Enemy {
                 if (trackingPlayer) {
                     if (X < pX) {
                         if (abs_heading != 180) {
-                            rotate (180 - abs_heading);
+                            //rotate (180 - abs_heading);
+                            rotate(180);
                         }
                         setVel(speedX, speedY);
                     }
                     else if (pX < X) {
                         if (abs_heading != 0 || abs_heading != 360) {
-                            rotate (0 - abs_heading);
+                            //rotate (0 - abs_heading);
+                            rotate(0);
                         }
                         setVel(-speedX, speedY);
                     }
@@ -118,7 +122,7 @@ public class DemonEye extends Enemy {
         // DIRECTION SPRITE HANDLING
         ClockWorker.addTask(new Task() {
             @Override
-            public void run() {;
+            public void run() {
                 if (heading >= 360) {
                     abs_heading = heading % 360;
                     setPicture(sprites[abs_heading / 30]);
@@ -132,15 +136,8 @@ public class DemonEye extends Enemy {
     }
 
     public void rotate(int n) {
-//        ClockWorker.addTask(new Task() {
-//            @Override
-//            public void run() {
-//                heading += 0.5;
-//                if (heading == n) this.setFinished();
-//            }
-//        });
-
-        heading += n;
+        //heading += n;
+        heading = n;
     }
 
     @Override
@@ -170,4 +167,34 @@ public class DemonEye extends Enemy {
         return damage;
     }
 
+    @Override
+    public void takeDamage(int damage) {
+        iter = 0;
+
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+                if (iter == damageCooldown) {
+                    currentHealth -= damage;
+                    System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
+                    if (currentHealth <= 0) {
+                        destroy();
+                        setVel(0, 0);
+                        direction = -1;
+                        heading = 0;
+                        abs_heading = 0;
+
+                    }
+                    this.setFinished();
+                }
+                else iter++;
+            }
+        });
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        System.out.println("Eye pressed");
+    }
 }

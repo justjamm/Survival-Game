@@ -39,6 +39,7 @@ public class Entity extends Sprite {
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
                         destroy();
+
                     }
                     this.setFinished();
                 }

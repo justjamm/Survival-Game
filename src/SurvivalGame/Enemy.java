@@ -24,4 +24,28 @@ public class Enemy extends Entity {
         this.trackingPlayer = false;
         this.direction = -1;
     }
+
+    @Override
+    public void takeDamage(int damage) {
+        iter = 0;
+
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+                if (iter == damageCooldown) {
+                    currentHealth -= damage;
+                    System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
+                    if (currentHealth <= 0) {
+                        destroy();
+                        setVel(0, 0);
+                        direction = 1;
+
+                    }
+                    this.setFinished();
+                }
+                else iter++;
+            }
+        });
+
+    }
 }
