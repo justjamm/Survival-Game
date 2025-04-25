@@ -6,7 +6,7 @@
 
 The requirements for this project was that it;
 
-1. Use the professor's BasicGraphics library, and
-2. Be 1000 lines in length, as decided by the professor's line checker tool which can be found [here](https://csc1351.cct.lsu.edu/)
+1. Use the professor's [BasicGraphics](https://github.com/stevenrbrandt/BasicGraphics) library
+2. Be 1000 lines in length, as dictated by the professor's line checker tool which can be found [here](https://csc1351.cct.lsu.edu/)
 
 **The full project requirements can be found [here](https://www.cct.lsu.edu/~sbrandt/csc1351/), aswell as the full course syllabus.**
