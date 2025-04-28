@@ -26,7 +26,8 @@ Overall, this project helped me increase my knowledge and experience in video ga
 
 <ins>Features:</ins>
 <ul>
-<li>Main menu, with splash screen, logo, start & exit buttons</li>
+<li>Main menu, with random splash screen, logo, start & exit buttons</li>
+<li>Randomly generating background</li>
 <li>2D perspective</li>
 <li>Sprite animation</li>
 <li>Randomly spawning enemies</li>
