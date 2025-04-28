@@ -19,7 +19,7 @@ Overall, this project helped me increase my knowledge and experience in video ga
 
 <ins>Controls:</ins>
 <ul>
-<li>WASD for movement</li>
+<li>WASD or Arrow Keys for movement</li>
 <li>Left Click for attack</li>
 <li>Escape to return to Menu</li>
 </ul>
