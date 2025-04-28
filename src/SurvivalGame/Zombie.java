@@ -137,4 +137,28 @@ public class Zombie extends Enemy {
     public int giveDamage() {
         return damage;
     }
+
+    @Override
+    public void takeDamage(int damage) {
+        iter = 0;
+
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+                if (iter == damageCooldown) {
+                    currentHealth -= damage;
+                    System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
+                    if (currentHealth <= 0) {
+                        destroy();
+                        setVel(0, 0);
+                        direction = 1;
+
+                    }
+                    this.setFinished();
+                }
+                else iter++;
+            }
+        });
+
+    }
 }

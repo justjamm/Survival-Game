@@ -55,7 +55,6 @@ public class DemonEye extends Enemy {
         heading = 0;
         setDrawingPriority(4);
         setPicture(sprites[0]);
-        setY(400);
 
 
 
@@ -123,13 +122,23 @@ public class DemonEye extends Enemy {
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
-                if (heading >= 360) {
-                    abs_heading = heading % 360;
-                    setPicture(sprites[abs_heading / 30]);
+//                if (heading >= 360) {
+//                    abs_heading = heading % 360;
+//                    setPicture(sprites[abs_heading / 30]);
+//                }
+//                else {
+//                    abs_heading = heading;
+//                    setPicture(sprites[abs_heading / 30]);
+//                }
+
+                setDrawingPriority(4);
+                if (getVelX() > 0) {
+                    direction = 1;
+                    setPicture(sprites[0]);
                 }
-                else {
-                    abs_heading = heading;
-                    setPicture(sprites[abs_heading / 30]);
+                if (getVelX() < 0) {
+                    direction = -1;
+                    setPicture(sprites[6]);
                 }
             }
         });
@@ -185,7 +194,6 @@ public class DemonEye extends Enemy {
                         abs_heading = 0;
 
                     }
-                    this.setFinished();
                 }
                 else iter++;
             }
@@ -195,6 +203,7 @@ public class DemonEye extends Enemy {
 
     @Override
     public void mousePressed(MouseEvent e) {
+
         System.out.println("Eye pressed");
     }
 }

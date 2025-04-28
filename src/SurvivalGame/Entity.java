@@ -2,6 +2,8 @@ package SurvivalGame;
 
 import basicgraphics.*;
 
+import java.awt.event.MouseEvent;
+
 public class Entity extends Sprite {
 
     public String tag;
@@ -29,23 +31,25 @@ public class Entity extends Sprite {
     }
 
     public void takeDamage(int damage) {
-        iter = 0;
 
-        ClockWorker.addTask(new Task() {
+        ClockWorker.addTask(new Task(damageCooldown) {
             @Override
             public void run() {
-                if (iter == damageCooldown) {
+                if (iteration() == damageCooldown) {
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
                         destroy();
-
                     }
                     this.setFinished();
                 }
-                else iter++;
             }
         });
 
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent me) {
+        System.out.println("Entity clicked");
     }
 }

@@ -73,7 +73,6 @@ public class Player extends Entity {
             @Override
             public void run() {
 
-                //System.out.println(getY());
 
                 if (touchingFloor) {
                     setVel(getVelX(), getVelY());
@@ -301,10 +300,10 @@ public class Player extends Entity {
     public void takeDamage(int damage) {
         iter = 0;
 
-        ClockWorker.addTask(new Task() {
+        ClockWorker.addTask(new Task(damageCooldown) {
             @Override
             public void run() {
-                if (iter == damageCooldown) {
+                if (iteration() == damageCooldown) {
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
@@ -314,7 +313,6 @@ public class Player extends Entity {
                     }
                     this.setFinished();
                 }
-                else iter++;
             }
         });
     }

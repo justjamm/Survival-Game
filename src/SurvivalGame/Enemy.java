@@ -27,23 +27,19 @@ public class Enemy extends Entity {
 
     @Override
     public void takeDamage(int damage) {
-        iter = 0;
 
-        ClockWorker.addTask(new Task() {
+        ClockWorker.addTask(new Task(damageCooldown) {
             @Override
             public void run() {
-                if (iter == damageCooldown) {
+                if (iteration() == damageCooldown) {
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
                         destroy();
-                        setVel(0, 0);
-                        direction = 1;
-
+                        setVel(0,0);
                     }
                     this.setFinished();
                 }
-                else iter++;
             }
         });
 
