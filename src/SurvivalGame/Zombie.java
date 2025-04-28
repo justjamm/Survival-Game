@@ -10,6 +10,7 @@ public class Zombie extends Enemy {
     public Picture[][] sprites;
     public volatile boolean trackingPlayer;
     public int damage;
+    final Random RANDOM = new Random();
     public int detRad;
 
 
@@ -35,7 +36,7 @@ public class Zombie extends Enemy {
         speedY = 7;
         detRad = 500; // detection radius of zombies
 
-        damage = 14;
+        this.damage = 14;
         maxHealth = 45;
         currentHealth = maxHealth;
 
@@ -135,30 +136,6 @@ public class Zombie extends Enemy {
 
     @Override
     public int giveDamage() {
-        return damage;
-    }
-
-    @Override
-    public void takeDamage(int damage) {
-        iter = 0;
-
-        ClockWorker.addTask(new Task() {
-            @Override
-            public void run() {
-                if (iter == damageCooldown) {
-                    currentHealth -= damage;
-                    System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
-                    if (currentHealth <= 0) {
-                        destroy();
-                        setVel(0, 0);
-                        direction = 1;
-
-                    }
-                    this.setFinished();
-                }
-                else iter++;
-            }
-        });
-
+        return RANDOM.nextInt(damage - 2, damage + 2);
     }
 }

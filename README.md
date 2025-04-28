@@ -35,7 +35,10 @@ Overall, this project helped me increase my knowledge and experience in video ga
 <li>Wave-based</li>
 </ul>
 
-
+Notes:
+<li>Collision does not always work, I believe it to be an issue with the
+collision method using classes instead of instances of that class, which 
+may cause multiple collisions of the same class to not register.</li>
 
 
 *This project contains assets from Terraria, owned by Re-Logic, used soley for educational and non-commerical purposes. 

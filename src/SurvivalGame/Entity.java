@@ -20,7 +20,6 @@ public class Entity extends Sprite {
     int currentHealth;
 
     public final int damageCooldown = 40;
-    int iter = 0;
 
     public Entity(Scene scene) {
         super(scene);

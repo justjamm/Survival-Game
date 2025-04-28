@@ -65,13 +65,6 @@ public class  MainCard {
                 }
             }
         });
-//        Scanner in = new Scanner(System.in);
-//        System.out.print("Enter player name: ");
-//        p.name = in.nextLine();
-//        System.out.println();
-
-        // PLAYER-ENEMY COLLISION
-
         mc.addKeyListener(p.kl);
 
 
@@ -87,9 +80,9 @@ public class  MainCard {
         //
 
         Zombie[] zombs = new Zombie[10];
-        ClockWorker.addTask(new Task() {
-           @Override
-           public void run() {
+//        ClockWorker.addTask(new Task() {
+//           @Override
+//           public void run() {
                for (int i = 0; i < zombs.length; i++) {
                    if (zombs[i] == null || !zombs[i].isActive()) {
                        Zombie z = new Zombie(sc.getScene(), p);
@@ -110,15 +103,18 @@ public class  MainCard {
                        });
                    }
                }
-           }
-        });
+//           }
+//        });
 
         // PLAYER-ZOMBIE COLLISION
         sc.addSpriteSpriteCollisionListener(Player.class, Zombie.class, new SpriteSpriteCollisionListener<Player, Zombie>() {
             @Override
             public void collision(Player p, Zombie z) {
-                //p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
                 p.takeDamage(z.giveDamage());
+                if (p.isSwinging) {
+                    System.out.println("player swinging hit zombie");
+                }
             }
         });
 
@@ -158,9 +154,9 @@ public class  MainCard {
         //
 
         DemonEye[] eyes = new DemonEye[5];
-        ClockWorker.addTask(new Task() {
-            @Override
-            public void run() {
+//        ClockWorker.addTask(new Task() {
+//            @Override
+//            public void run() {
                 for (int i = 0; i < eyes.length; i++) {
                     if (eyes[i] == null || !eyes[i].isActive()) {
                         DemonEye de = new DemonEye(sc.getScene(), p);
@@ -170,14 +166,14 @@ public class  MainCard {
                         eyes[i] = de;
                     }
                 }
-            }
-        });
+//            }
+//        });
 
         // PLAYER-EYE COLLISION
         sc.addSpriteSpriteCollisionListener(Player.class, DemonEye.class, new SpriteSpriteCollisionListener<Player, DemonEye>() {
             @Override
             public void collision(Player p, DemonEye de) {
-                //p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
                 if (!de.hitPlayer) {
                     p.takeDamage(de.giveDamage());
                     de.hitPlayer = true;
@@ -193,10 +189,12 @@ public class  MainCard {
             }
         });
 
-        Tree[] trees = new Tree[10];
+        int treeX = 100;
+        Tree[] trees = new Tree[15];
         for (int i=0;i<trees.length;i++) {
             Tree t = new Tree(sc.getScene());
-            t.setX(RANDOM.nextInt(20, 2000));
+            t.setX(RANDOM.nextInt(treeX - 50, treeX + 50));
+            treeX += 200;
             t.setY(1.1*t.getHeight());
             trees[i] = t;
         }
@@ -213,7 +211,7 @@ public class  MainCard {
             public void keyPressed(KeyEvent ke) {
                 if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     hideCard();
-                    TitleCard.card.showCard();
+                    TitleCard.showCard();
                 }
             }
         }));

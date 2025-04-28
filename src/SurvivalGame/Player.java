@@ -281,7 +281,6 @@ public class Player extends Entity {
         }
     }
 
-    @Override
     public int giveDamage() {
 
         damage = RAND.nextInt(5, 10);
@@ -298,7 +297,6 @@ public class Player extends Entity {
 
     @Override
     public void takeDamage(int damage) {
-        iter = 0;
 
         ClockWorker.addTask(new Task(damageCooldown) {
             @Override
@@ -307,7 +305,7 @@ public class Player extends Entity {
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
-                        BasicDialog.getOK("You died! Press OK to restart.");
+                        BasicDialog.getOK("You died! Press OK to exit.");
                         BasicFrame.getFrame().dispose();
                         System.exit(0);
                     }
@@ -315,11 +313,6 @@ public class Player extends Entity {
                 }
             }
         });
-    }
-
-    public double getXPos() {
-        return getX();
-
     }
 }
 

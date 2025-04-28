@@ -15,6 +15,7 @@ public class DemonEye extends Enemy {
     public int abs_heading = heading;
     public volatile boolean trackingPlayer;
     public int damage;
+    final Random RANDOM = new Random();
     public int detRad;
 
     public DemonEye(Scene scene, Player p) {
@@ -58,7 +59,7 @@ public class DemonEye extends Enemy {
 
 
 
-        // PLAYER TRACKING - ROTATION BASED
+        // PLAYER TRACKING - not ROTATION BASED
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
@@ -73,6 +74,7 @@ public class DemonEye extends Enemy {
                 double pY = p.getY();
                 double X = getX();
                 double Y = getY();
+
 
                 // only x coord checking, implement y later
                 if (((pX < X && pX >= X - detRad) || (X < pX && X + detRad >= pX)) && !hitPlayer) {
@@ -144,6 +146,11 @@ public class DemonEye extends Enemy {
         });
     }
 
+    @Override
+    public int giveDamage() {
+        return (RANDOM.nextInt(damage - 2, damage + 2));
+    }
+
     public void rotate(int n) {
         //heading += n;
         heading = n;
@@ -172,38 +179,7 @@ public class DemonEye extends Enemy {
     }
 
     @Override
-    public int giveDamage() {
-        return damage;
-    }
-
-    @Override
-    public void takeDamage(int damage) {
-        iter = 0;
-
-        ClockWorker.addTask(new Task() {
-            @Override
-            public void run() {
-                if (iter == damageCooldown) {
-                    currentHealth -= damage;
-                    System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
-                    if (currentHealth <= 0) {
-                        destroy();
-                        setVel(0, 0);
-                        direction = -1;
-                        heading = 0;
-                        abs_heading = 0;
-
-                    }
-                }
-                else iter++;
-            }
-        });
-
-    }
-
-    @Override
     public void mousePressed(MouseEvent e) {
-
         System.out.println("Eye pressed");
     }
 }
