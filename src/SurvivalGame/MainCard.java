@@ -79,7 +79,7 @@ public class  MainCard {
         // ZOMBIES
         //
 
-        Zombie[] zombs = new Zombie[10];
+        Zombie[] zombs = new Zombie[15];
 //        ClockWorker.addTask(new Task() {
 //           @Override
 //           public void run() {
@@ -113,7 +113,8 @@ public class  MainCard {
                 p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
                 p.takeDamage(z.giveDamage());
                 if (p.isSwinging) {
-                    System.out.println("player swinging hit zombie");
+                    z.takeDamage(p.giveDamage());
+                    z.setVel(-2 * z.getVelX(), -0.5 * z.getVelY());
                 }
             }
         });
@@ -142,18 +143,18 @@ public class  MainCard {
         });
 
         // ZOMBIE-ZOMBIE COLLISION
-        sc.addSpriteSpriteCollisionListener(Zombie.class, Zombie.class, new SpriteSpriteCollisionListener<Zombie, Zombie>() {
-            @Override
-            public void collision(Zombie z1, Zombie z2) {
-                z1.setVel(0, z1.getVelY());
-            }
-        });
+//        sc.addSpriteSpriteCollisionListener(Zombie.class, Zombie.class, new SpriteSpriteCollisionListener<Zombie, Zombie>() {
+//            @Override
+//            public void collision(Zombie z1, Zombie z2) {
+//                z1.setVel(0, z1.getVelY());
+//            }
+//        });
 
         //
         // DEMON EYES
         //
 
-        DemonEye[] eyes = new DemonEye[5];
+        DemonEye[] eyes = new DemonEye[10];
 //        ClockWorker.addTask(new Task() {
 //            @Override
 //            public void run() {
@@ -174,20 +175,20 @@ public class  MainCard {
             @Override
             public void collision(Player p, DemonEye de) {
                 p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
-                if (!de.hitPlayer) {
+//                if (!de.hitPlayer) {
                     p.takeDamage(de.giveDamage());
                     de.hitPlayer = true;
-                }
+//                }
             }
         });
 
         // EYE-EYE COLLISION
-        sc.addSpriteSpriteCollisionListener(DemonEye.class, DemonEye.class, new SpriteSpriteCollisionListener<DemonEye, DemonEye>() {
-            @Override
-            public void collision(DemonEye d1, DemonEye d2) {
-                d1.setVel(-d1.getVelX(), d1.getVelY());
-            }
-        });
+//        sc.addSpriteSpriteCollisionListener(DemonEye.class, DemonEye.class, new SpriteSpriteCollisionListener<DemonEye, DemonEye>() {
+//            @Override
+//            public void collision(DemonEye d1, DemonEye d2) {
+//                d1.setVel(-d1.getVelX(), d1.getVelY());
+//            }
+//        });
 
         int treeX = 100;
         Tree[] trees = new Tree[15];

@@ -36,7 +36,7 @@ public class Zombie extends Enemy {
         speedY = 7;
         detRad = 500; // detection radius of zombies
 
-        this.damage = 14;
+        this.damage = 10;
         maxHealth = 45;
         currentHealth = maxHealth;
 

@@ -46,7 +46,7 @@ public class DemonEye extends Enemy {
         this.trackingPlayer = false;
         this.direction = -1;
 
-        damage = 18;
+        damage = 20;
         maxHealth = 60;
         currentHealth = maxHealth;
         detRad = 800;
@@ -63,13 +63,6 @@ public class DemonEye extends Enemy {
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
-
-
-//                if (tag.equals("Demon Eye 1")) {
-//                    System.out.println(tag + " heading: " + heading);
-//                }
-
-
                 double pX = p.getX();
                 double pY = p.getY();
                 double X = getX();

@@ -305,7 +305,7 @@ public class Player extends Entity {
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
-                        BasicDialog.getOK("You died! Press OK to exit.");
+                        BasicDialog.getOK(String.format("You survived for %d seconds. Press OK to exit.", iteration()));
                         BasicFrame.getFrame().dispose();
                         System.exit(0);
                     }

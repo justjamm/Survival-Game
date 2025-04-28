@@ -36,9 +36,9 @@ Overall, this project helped me increase my knowledge and experience in video ga
 </ul>
 
 Notes:
-<li>Collision does not always work, I believe it to be an issue with the
+Collision only **sometimes** works as expected, I believe it to be an issue with the
 collision method using classes instead of instances of that class, which 
-may cause multiple collisions of the same class to not register.</li>
+may cause multiple collisions of the same class to not register.
 
 
 *This project contains assets from Terraria, owned by Re-Logic, used soley for educational and non-commerical purposes. 
