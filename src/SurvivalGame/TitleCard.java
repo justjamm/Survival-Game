@@ -15,15 +15,17 @@ import java.util.Random;
 public class TitleCard {
     public static Card card;
     public static MainCard mainCard;
-    private final Picture[] splashes = {new Picture("corruption_splash.png"), new Picture("crimson_splash.png"), new Picture("desert_splash.png"), new Picture("forest_splash.png"), new Picture("hallow_splash.png"), new Picture("jungle_splash.png"), new Picture("mushroom_splash.png"), new Picture("ocean_splash.png"), new Picture("snow_splash.png")};
+    private static final Picture[] splashes = {new Picture("corruption_splash.png"), new Picture("crimson_splash.png"), new Picture("desert_splash.png"), new Picture("forest_splash.png"), new Picture("hallow_splash.png"), new Picture("jungle_splash.png"), new Picture("mushroom_splash.png"), new Picture("ocean_splash.png"), new Picture("snow_splash.png")};
     private final String[][] layout = {
             {"Title"},
             {"Button1"},
             {"Button2"}
     };
     private static SpriteComponent sc;
-    private final Picture titleLogo = new Picture("title1.png");
-    private final Random RANDOM = new Random();
+    private static final Picture titleLogo = new Picture("title1.png");
+    private static final Random RANDOM = new Random();
+
+    private static Background bg;
 
     public TitleCard(BasicFrame f, MainCard mc) {
         card = f.getCard();
@@ -34,8 +36,8 @@ public class TitleCard {
         card.setStringLayout(layout);
 
         // non functional, implement later
-        SpriteComponent sc = new SpriteComponent();
-        Background bg = new Background(sc.getScene(), sc.getScene().getBackgroundSize());
+        sc = new SpriteComponent();
+        bg = new Background(sc.getScene(), sc.getScene().getBackgroundSize());
         bg.setDrawingPriority(1);
         bg.setPicture(splashes[RANDOM.nextInt(splashes.length)]);
         bg.setX(0);
@@ -69,9 +71,17 @@ public class TitleCard {
         card.add("Button2", exit);
 
     }
+    public static void changeBackground() {
+        bg.setDrawingPriority(1);
+        bg.setPicture(splashes[RANDOM.nextInt(splashes.length)]);
+        System.out.println("changeBackground");
+    }
+
+
     public static void showCard() {
         card.showCard();
         card.requestFocus();
+        changeBackground();
     }
     public static void hideCard() {
         card.setVisible(false);
