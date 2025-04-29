@@ -1,8 +1,7 @@
-package SurvivalGame;
+package survivalgame;
 
 import basicgraphics.*;
 import basicgraphics.images.Picture;
-import org.w3c.dom.ls.LSOutput;
 
 import java.awt.event.MouseEvent;
 import java.util.Random;
@@ -117,14 +116,14 @@ public class DemonEye extends Enemy {
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
-//                if (heading >= 360) {
-//                    abs_heading = heading % 360;
-//                    setPicture(sprites[abs_heading / 30]);
-//                }
-//                else {
-//                    abs_heading = heading;
-//                    setPicture(sprites[abs_heading / 30]);
-//                }
+                if (heading >= 360) {
+                    abs_heading = heading % 360;
+                    setPicture(sprites[abs_heading / 30]);
+                }
+                else {
+                    abs_heading = heading;
+                    setPicture(sprites[abs_heading / 30]);
+                }
 
                 setDrawingPriority(4);
                 if (getVelX() > 0) {

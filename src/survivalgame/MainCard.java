@@ -1,4 +1,4 @@
-package SurvivalGame;
+package survivalgame;
 
 import basicgraphics.*;
 
@@ -12,7 +12,7 @@ public class  MainCard {
     private final SpriteComponent sc;
     private final Random RANDOM = new Random();
     private Dimension BOARD;
-    private final int NUM_BACKGROUNDS = 2;
+    private final int NUM_BACKGROUNDS = 4;
 
 
 
@@ -20,7 +20,7 @@ public class  MainCard {
 
     public MainCard(BasicFrame f) {
         mc = f.getCard();
-        BOARD = new Dimension (1200*NUM_BACKGROUNDS,500);//f.FRAME_SIZE;
+        BOARD = new Dimension (500,500);//f.FRAME_SIZE;
         sc = new SpriteComponent();
         sc.setPreferredSize(BOARD);
         sc.getScene().setBackgroundSize(new Dimension(1200 * NUM_BACKGROUNDS,3928));
@@ -112,7 +112,7 @@ public class  MainCard {
             @Override
             public void collision(Player p, Zombie z) {
                 p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
-                //p.takeDamage(z.giveDamage());
+                p.takeDamage(z.giveDamage());
                 if (p.isSwinging) {
                     z.takeDamage(p.giveDamage());
                     z.setVel(-2 * z.getVelX(), -0.5 * z.getVelY());
@@ -144,12 +144,12 @@ public class  MainCard {
         });
 
         // ZOMBIE-ZOMBIE COLLISION
-//        sc.addSpriteSpriteCollisionListener(Zombie.class, Zombie.class, new SpriteSpriteCollisionListener<Zombie, Zombie>() {
-//            @Override
-//            public void collision(Zombie z1, Zombie z2) {
-//                z1.setVel(0, z1.getVelY());
-//            }
-//        });
+        sc.addSpriteSpriteCollisionListener(Zombie.class, Zombie.class, new SpriteSpriteCollisionListener<Zombie, Zombie>() {
+            @Override
+            public void collision(Zombie z1, Zombie z2) {
+                z1.setVel(0, z1.getVelY());
+            }
+        });
 
         //
         // DEMON EYES
@@ -183,13 +183,13 @@ public class  MainCard {
             }
         });
 
-        // EYE-EYE COLLISION
-//        sc.addSpriteSpriteCollisionListener(DemonEye.class, DemonEye.class, new SpriteSpriteCollisionListener<DemonEye, DemonEye>() {
-//            @Override
-//            public void collision(DemonEye d1, DemonEye d2) {
-//                d1.setVel(-d1.getVelX(), d1.getVelY());
-//            }
-//        });
+        //EYE-EYE COLLISION
+        sc.addSpriteSpriteCollisionListener(DemonEye.class, DemonEye.class, new SpriteSpriteCollisionListener<DemonEye, DemonEye>() {
+            @Override
+            public void collision(DemonEye d1, DemonEye d2) {
+                d1.setVel(-d1.getVelX(), d1.getVelY());
+            }
+        });
 
         int treeX = 100;
         Tree[] trees = new Tree[15];
@@ -200,6 +200,51 @@ public class  MainCard {
             t.setY(1.1*t.getHeight());
             trees[i] = t;
         }
+
+
+        Platform[] platforms = new Platform[35];
+        int platformsX = 100;
+        for (int i = 0; i < platforms.length; i++) {
+            Platform plat = new Platform(sc.getScene());
+            plat.setX(platformsX);
+            platformsX += 200;
+            plat.setY(RANDOM.nextInt(100, 400));
+            platforms[i] = plat;
+        }
+
+        // ENTITY-PLATFORM COLLISION
+        sc.addSpriteSpriteCollisionListener(Entity.class, Platform.class, new SpriteSpriteCollisionListener<Entity, Platform>() {
+            @Override
+            public void collision (Entity e, Platform plat) {
+                e.setVel(-e.getVelX(), 0);
+            }
+        });
+        // PLAYER-PLATFORM COLLISION
+        sc.addSpriteSpriteCollisionListener(Player.class, Platform.class, new SpriteSpriteCollisionListener<Player, Platform>() {
+            @Override
+            public void collision(Player p, Platform plat) {
+                p.touchingFloor = true;
+                p.isJumping = false;
+                p.setVel(p.getVelX(), 0);
+
+                if (!p.isRunning) {
+                    switch (p.direction) {
+                        case 1 -> {
+                            if (!p.isSwinging) {
+                                p.setDrawingPriority(5);
+                                p.setPicture(p.spriteR);
+                            }
+                        }
+                        case -1 -> {
+                            if (!p.isSwinging) {
+                                p.setDrawingPriority(5);
+                                p.setPicture(p.spriteL);
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
 
 

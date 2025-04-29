@@ -1,34 +1,34 @@
-package SurvivalGame;
+package survivalgame;
 
 import basicgraphics.*;
 
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class Entity extends Sprite {
+public class Enemy extends Entity {
+    public volatile boolean trackingPlayer;
+    public int damage;
+    public int detRad;
 
-    public String tag;
+    public MouseListener ml;
 
-    public volatile boolean touchingFloor;
-    public volatile boolean isJumping;
-    public volatile boolean isRunning;
-
-    public volatile int direction; // Left: -1, Right: 1
-    public double speedX;
-    public double speedY;
-
-    int maxHealth;
-    int currentHealth;
-
-    public final int damageCooldown = 40;
-
-    public Entity(Scene scene) {
+    public Enemy(Scene scene) {
         super(scene);
+
+        this.freezeOrientation = true;
+        this.touchingFloor = false;
+        this.isJumping = false;
+        this.isRunning = false;
+        this.trackingPlayer = false;
+        this.direction = -1;
     }
 
+    @Override
     public int giveDamage() {
-        return 0;
+        return damage;
     }
 
+    @Override
     public void takeDamage(int damage) {
 
         ClockWorker.addTask(new Task(damageCooldown) {
@@ -49,6 +49,6 @@ public class Entity extends Sprite {
 
     @Override
     public void mouseClicked(MouseEvent me) {
-        System.out.println("Entity clicked");
+        System.out.println("Enemy clicked!");
     }
 }

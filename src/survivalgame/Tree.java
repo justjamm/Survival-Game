@@ -1,4 +1,4 @@
-package SurvivalGame;
+package survivalgame;
 
 import basicgraphics.Scene;
 import basicgraphics.images.Picture;

@@ -1,7 +1,5 @@
 # Survival Game
 
----
-
 "Survival Game" is my final project for Professor Steven Brandt's CSC 1351 course.
 
 The requirements for this project was that it;

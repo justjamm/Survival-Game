@@ -1,12 +1,10 @@
-package SurvivalGame;//package SurvivalGame;
+package survivalgame;//package SurvivalGame;
 
 import basicgraphics.*;
 import basicgraphics.images.BackgroundPainter;
 import basicgraphics.images.Picture;
-import basicgraphics.sounds.ReusableClip;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;

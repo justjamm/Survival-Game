@@ -1,9 +1,8 @@
-package SurvivalGame;
+package survivalgame;
 
 import basicgraphics.*;
 import basicgraphics.images.Picture;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
 
@@ -305,7 +304,7 @@ public class Player extends Entity {
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
-                        BasicDialog.getOK(String.format("You survived for %d seconds. Press OK to exit.", iteration()));
+                        BasicDialog.getOK(getDeathText(iteration()));
                         BasicFrame.getFrame().dispose();
                         System.exit(0);
                     }
@@ -313,6 +312,23 @@ public class Player extends Entity {
                 }
             }
         });
+    }
+
+    public String getDeathText(int surviveTime) {
+        final Random RANDOM = new Random();
+
+        final String[] first = {"The player has fallen in battle.", "You have fallen in battle.", "Your brave warrior has died.", "The Player has died.", "You ran out of health!", "you died lol.", "How did you let them kill you?", "You have failed your mission soldier.", "You surrendered to the horde."};
+        final String[] second = {"This world is doomed.", "Chaos awaits...", "The horde has emerged victorious.", "It's all over..."};
+        final String[] third = {"You survived for %d seconds.", "You fought off the horde for %d seconds.", "Congratulations, you survived for %d seconds"};
+
+        String f = first[RANDOM.nextInt(0, first.length - 1)];
+        String s = second[RANDOM.nextInt(0, second.length - 1)];
+        String t = String.format(third[RANDOM.nextInt(0, third.length - 1)], surviveTime);
+
+        String deathText = String.format("%s %s \n%s\nPress OK to exit", f, s, t);
+
+
+        return deathText;
     }
 }
 

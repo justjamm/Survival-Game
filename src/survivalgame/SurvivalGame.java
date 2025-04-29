@@ -1,10 +1,7 @@
-package SurvivalGame;
+package survivalgame;
 
 import basicgraphics.BasicFrame;
 import basicgraphics.ClockWorker;
-import basicgraphics.SpriteComponent;
-
-import java.awt.*;
 
 public class  SurvivalGame {
     public static void main(String[] args) {

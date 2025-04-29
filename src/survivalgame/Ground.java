@@ -1,11 +1,9 @@
-package SurvivalGame;
+package survivalgame;
 
 import basicgraphics.*;
 import basicgraphics.images.Picture;
 
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class Ground extends Sprite {

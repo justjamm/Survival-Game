@@ -1,9 +1,8 @@
-package SurvivalGame;
+package survivalgame;
 
 import basicgraphics.*;
 import basicgraphics.images.Picture;
 
-import java.awt.*;
 import java.util.Random;
 
 public class Zombie extends Enemy {
@@ -93,7 +92,6 @@ public class Zombie extends Enemy {
                 }
                 else {
                     trackingPlayer = false;
-
                 }
 
                 if (trackingPlayer) {
@@ -104,15 +102,15 @@ public class Zombie extends Enemy {
                         setVel(-Math.abs(speedX), getVelY());
                     }
                 }
-                else {
-                    if (zX < pX && direction == 1) {
-                        setVel(-1 * 0.3 * getVelX(), getVelY());
-
-                    }
-                    else if (pX < zX && direction == -1) {
-                        setVel(-1 * 0.3 * getVelX(), getVelY());
-                    }
-                }
+//                else {
+//                    if (zX < pX && direction == 1) {
+//                        setVel(-1 * 0.3 * getVelX(), getVelY());
+//
+//                    }
+//                    else if (pX < zX && direction == -1) {
+//                        setVel(-1 * 0.3 * getVelX(), getVelY());
+//                    }
+//                }
             }
         });
     }
