@@ -1,5 +1,7 @@
 # Survival Game
 
+---
+
 "Survival Game" is my final project for Professor Steven Brandt's CSC 1351 course.
 
 The requirements for this project was that it;
@@ -17,14 +19,16 @@ However, it is still a decently fun wave game.
 
 Overall, this project helped me increase my knowledge and experience in video game & object-oriented programming.
 
-<ins>Controls:</ins>
+---
+
+<ins>Controls</ins>:
 <ul>
 <li>WASD or Arrow Keys for movement</li>
 <li>Left Click for attack</li>
 <li>Escape to return to Menu</li>
 </ul>
 
-<ins>Features:</ins>
+<ins>Features</ins>:
 <ul>
 <li>Main menu, with random splash screen, logo, start & exit buttons</li>
 <li>Randomly generating background</li>
@@ -35,11 +39,21 @@ Overall, this project helped me increase my knowledge and experience in video ga
 <li>Wave-based</li>
 </ul>
 
-Notes:
-Collision only **sometimes** works as expected, I believe it to be an issue with the
-collision method using classes instead of instances of that class, which 
-may cause multiple collisions of the same class to not register.
+<ins>Bugs</ins>:
+<ul>
+<li>
+Collision only <b>sometimes</b> works as expected, I believe it to be an issue with the collision method using classes instead of instances of that class, which 
+cause multiple collisions of the same class to not register.
+</li>
+<li>
+Trees may only half-load in, no clue why.
+</li>
+<li>
+For some reason, at the right edge of the map, all sprites of subclass <b>Entity</b> disappear from the screen.
+</li>
+</ul>
 
+---
 
 *This project contains assets from Terraria, owned by Re-Logic, used soley for educational and non-commerical purposes. 
 No profit is being made from this project and all rights remain to their respective owners.*

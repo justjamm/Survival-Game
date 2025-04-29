@@ -12,7 +12,7 @@ public class  MainCard {
     private final SpriteComponent sc;
     private final Random RANDOM = new Random();
     private Dimension BOARD;
-    private final int NUM_BACKGROUNDS = 3;
+    private final int NUM_BACKGROUNDS = 2;
 
 
 
@@ -20,7 +20,7 @@ public class  MainCard {
 
     public MainCard(BasicFrame f) {
         mc = f.getCard();
-        BOARD = new Dimension (500,500);//f.FRAME_SIZE;
+        BOARD = new Dimension (1200*NUM_BACKGROUNDS,500);//f.FRAME_SIZE;
         sc = new SpriteComponent();
         sc.setPreferredSize(BOARD);
         sc.getScene().setBackgroundSize(new Dimension(1200 * NUM_BACKGROUNDS,3928));
@@ -37,7 +37,8 @@ public class  MainCard {
 
         // PLAYER
         Player p = new Player(sc.getScene());
-        p.setX(g.getWidth() / 2);
+        //p.setX(g.getWidth() / 2);
+        p.setX(100);
         sc.getScene().setFocus(p);
         sc.addMouseListener(p.ma);
         sc.addSpriteSpriteCollisionListener(Player.class, Ground.class, new SpriteSpriteCollisionListener<Player, Ground>() {
@@ -79,7 +80,7 @@ public class  MainCard {
         // ZOMBIES
         //
 
-        Zombie[] zombs = new Zombie[15];
+        Zombie[] zombs = new Zombie[5];
 //        ClockWorker.addTask(new Task() {
 //           @Override
 //           public void run() {
@@ -111,7 +112,7 @@ public class  MainCard {
             @Override
             public void collision(Player p, Zombie z) {
                 p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
-                p.takeDamage(z.giveDamage());
+                //p.takeDamage(z.giveDamage());
                 if (p.isSwinging) {
                     z.takeDamage(p.giveDamage());
                     z.setVel(-2 * z.getVelX(), -0.5 * z.getVelY());
@@ -154,7 +155,7 @@ public class  MainCard {
         // DEMON EYES
         //
 
-        DemonEye[] eyes = new DemonEye[10];
+        DemonEye[] eyes = new DemonEye[3];
 //        ClockWorker.addTask(new Task() {
 //            @Override
 //            public void run() {
