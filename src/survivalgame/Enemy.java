@@ -28,24 +28,24 @@ public class Enemy extends Entity {
         return damage;
     }
 
-    @Override
-    public void takeDamage(int damage) {
-
-        ClockWorker.addTask(new Task(damageCooldown) {
-            @Override
-            public void run() {
-                if (iteration() == damageCooldown) {
-                    currentHealth -= damage;
-                    System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
-                    if (currentHealth <= 0) {
-                        destroy();
-                    }
-                    this.setFinished();
-                }
-            }
-        });
-
-    }
+//    @Override
+//    public void takeDamage(int damage) {
+//
+//        ClockWorker.addTask(new Task(damageCooldown) {
+//            @Override
+//            public void run() {
+//                if (iteration() == damageCooldown) {
+//                    currentHealth -= damage;
+//                    System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
+//                    if (currentHealth <= 0) {
+//                        destroy();
+//                    }
+//                    this.setFinished();
+//                }
+//            }
+//        });
+//
+//    }
 
     @Override
     public void mouseClicked(MouseEvent me) {

@@ -102,15 +102,6 @@ public class Zombie extends Enemy {
                         setVel(-Math.abs(speedX), getVelY());
                     }
                 }
-//                else {
-//                    if (zX < pX && direction == 1) {
-//                        setVel(-1 * 0.3 * getVelX(), getVelY());
-//
-//                    }
-//                    else if (pX < zX && direction == -1) {
-//                        setVel(-1 * 0.3 * getVelX(), getVelY());
-//                    }
-//                }
             }
         });
     }

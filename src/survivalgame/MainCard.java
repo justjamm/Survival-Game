@@ -1,6 +1,7 @@
 package survivalgame;
 
 import basicgraphics.*;
+import basicgraphics.sounds.ReusableClip;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -31,6 +32,9 @@ public class  MainCard {
         sc.getScene().periodic_x = false;
         sc.getScene().periodic_y = false;
 
+        ReusableClip music1 = new ReusableClip("title.wav");
+        music1.loop();
+
         // BACKGROUND & GROUND
         BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
         Ground g = new Ground(sc.getScene(), sc.getScene().getBackgroundSize());
@@ -39,6 +43,7 @@ public class  MainCard {
         Player p = new Player(sc.getScene());
         //p.setX(g.getWidth() / 2);
         p.setX(100);
+        p.setY(430);
         sc.getScene().setFocus(p);
         sc.addMouseListener(p.ma);
         sc.addSpriteSpriteCollisionListener(Player.class, Ground.class, new SpriteSpriteCollisionListener<Player, Ground>() {
@@ -111,11 +116,15 @@ public class  MainCard {
         sc.addSpriteSpriteCollisionListener(Player.class, Zombie.class, new SpriteSpriteCollisionListener<Player, Zombie>() {
             @Override
             public void collision(Player p, Zombie z) {
-                p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
-                p.takeDamage(z.giveDamage());
                 if (p.isSwinging) {
                     z.takeDamage(p.giveDamage());
+                    int knockback = 50 * z.direction;
                     z.setVel(-2 * z.getVelX(), -0.5 * z.getVelY());
+                    z.setX(z.getX() - knockback);
+                }
+                else {
+                    p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                    p.takeDamage(z.giveDamage());
                 }
             }
         });
@@ -163,7 +172,7 @@ public class  MainCard {
                     if (eyes[i] == null || !eyes[i].isActive()) {
                         DemonEye de = new DemonEye(sc.getScene(), p);
                         de.setX(RANDOM.nextInt(100, 3500));
-                        de.setY(RANDOM.nextInt(200, 400));
+                        de.setY(RANDOM.nextInt(200, 375));
                         de.tag = String.format("Demon Eye %d", i);
                         eyes[i] = de;
                     }
@@ -191,6 +200,10 @@ public class  MainCard {
             }
         });
 
+        //
+        // INTERACTABLES
+        //
+
         int treeX = 100;
         Tree[] trees = new Tree[15];
         for (int i=0;i<trees.length;i++) {
@@ -208,15 +221,21 @@ public class  MainCard {
             Platform plat = new Platform(sc.getScene());
             plat.setX(platformsX);
             platformsX += 200;
-            plat.setY(RANDOM.nextInt(100, 400));
+            plat.setY(RANDOM.nextInt(100, 300));
             platforms[i] = plat;
         }
 
-        // ENTITY-PLATFORM COLLISION
-        sc.addSpriteSpriteCollisionListener(Entity.class, Platform.class, new SpriteSpriteCollisionListener<Entity, Platform>() {
+        // ZOMBIE-PLATFORM COLLISION
+        sc.addSpriteSpriteCollisionListener(Zombie.class, Platform.class, new SpriteSpriteCollisionListener<Zombie, Platform>() {
             @Override
-            public void collision (Entity e, Platform plat) {
+            public void collision (Zombie e, Platform plat) {
                 e.setVel(-e.getVelX(), 0);
+            }
+        });
+        sc.addSpriteSpriteCollisionListener(DemonEye.class, Platform.class, new SpriteSpriteCollisionListener<DemonEye, Platform>() {
+            @Override
+            public void collision (DemonEye e, Platform plat) {
+                e.setVel(e.getVelX(), e.getVelY());
             }
         });
         // PLAYER-PLATFORM COLLISION
@@ -242,6 +261,26 @@ public class  MainCard {
                             }
                         }
                     }
+                }
+            }
+        });
+
+        LifeCrystal[] lcrystals = new LifeCrystal[3];
+        final int crystalsX = 800;
+        for (int i = 0; i < lcrystals.length; i++) {
+            if (lcrystals[i] == null || !lcrystals[i].isActive()) {
+                LifeCrystal lc = new LifeCrystal(sc.getScene());
+                lc.setX(crystalsX * (i + 1));
+                lc.setY(430);
+            }
+        }
+
+        sc.addSpriteSpriteCollisionListener(Player.class, LifeCrystal.class, new SpriteSpriteCollisionListener<Player, LifeCrystal>() {
+            @Override
+            public void collision(Player p, LifeCrystal lc) {
+                if (lc.isActive()) {
+                    p.addHealth(lc.giveHealth());
+                    lc.destroy();
                 }
             }
         });

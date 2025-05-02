@@ -50,81 +50,93 @@ public class DemonEye extends Enemy {
         currentHealth = maxHealth;
         detRad = 800;
 
-        speedX = 1;
+        speedX = RANDOM.nextDouble(0.5, 1.0);
         speedY = 0;
         heading = 0;
         setDrawingPriority(4);
         setPicture(sprites[0]);
 
+        setVel(speedX, speedY);
+
 
 
         // PLAYER TRACKING - not ROTATION BASED
-        ClockWorker.addTask(new Task() {
-            @Override
-            public void run() {
-                double pX = p.getX();
-                double pY = p.getY();
-                double X = getX();
-                double Y = getY();
-
-
-                // only x coord checking, implement y later
-                if (((pX < X && pX >= X - detRad) || (X < pX && X + detRad >= pX)) && !hitPlayer) {
-                    trackingPlayer = true;
-                }
-                else {
-                    trackingPlayer = false;
-                }
-
-                // THIS IS BUGGED - FIX LTR SKTR
-                if (hitPlayer && ((pX + detRad < X) || (X < pX - detRad))) {
-                    if  ((p.direction == 1 && (abs_heading < 90 && abs_heading >= 0 || abs_heading >= 270 && abs_heading < 360)) ||
-                        ((p.direction == -1 && (abs_heading >= 90 && abs_heading < 270)))) {
-                        hitPlayer = false;
-                    }
-                }
-
-
-                if (trackingPlayer) {
-                    if (X < pX) {
-                        if (abs_heading != 180) {
-                            //rotate (180 - abs_heading);
-                            rotate(180);
-                        }
-                        setVel(speedX, speedY);
-                    }
-                    else if (pX < X) {
-                        if (abs_heading != 0 || abs_heading != 360) {
-                            //rotate (0 - abs_heading);
-                            rotate(0);
-                        }
-                        setVel(-speedX, speedY);
-                    }
-                }
-
-                if (X + 50 >= pX && pX >= X - 50) {
-                    trackingPlayer = false;
-                    hitPlayer = true;
-                    //System.out.println("false");
-                    if (0 <= heading && heading < 180) setVel(speedX, speedY);
-                    else if (180 <= heading && heading < 360) setVel(-speedX, speedY);
-                }
-            }
-        });
+//        ClockWorker.addTask(new Task() {
+//            @Override
+//            public void run() {
+//                double pX = p.getX();
+//                double pY = p.getY();
+//                double X = getX();
+//                double Y = getY();
+//
+//
+//
+//                /*
+//                If more time was available, I'd like to get DemonEye working as I'd like it to. My hope was to have demon eye's movements
+//                be somewhat random, diving in to attack the player when its near. However, I'll settle for this.
+//                 */
+////
+////                if (pX + 100 < X && X < pX - 100) {
+////                    setVel(getVelX(), getVelY());
+////                }
+////                else if (pX < X && !(getVelX() < 0) ) {
+////                    setVel(-speedX, speedY);
+////                }
+////                else if (X < pX && !(getVelX() > 0) ) {
+////                    setVel(speedX, speedY);
+////                }
+//
+//
+//
+//
+////                // only x coord checking, implement y later
+////                if (((pX < X && pX >= X - detRad) || (X < pX && X + detRad >= pX)) && !hitPlayer) {
+////                    trackingPlayer = true;
+////                }
+////                else {
+////                    trackingPlayer = false;
+////                }
+//
+//                // THIS IS BUGGED - FIX LTR SKTR
+////                if (hitPlayer && ((pX + detRad < X) || (X < pX - detRad))) {
+////                    if  ((p.direction == 1 && (abs_heading < 90 && abs_heading >= 0 || abs_heading >= 270 && abs_heading < 360)) ||
+////                        ((p.direction == -1 && (abs_heading >= 90 && abs_heading < 270)))) {
+////                        hitPlayer = false;
+////                    }
+////                }
+//
+//
+////                if (trackingPlayer) {
+////                    if (X < pX) {
+////                        if (abs_heading != 180) {
+////                            //rotate (180 - abs_heading);
+////                            rotate(180);
+////                        }
+////                        setVel(speedX, speedY);
+////                    }
+////                    else if (pX < X) {
+////                        if (abs_heading != 0 || abs_heading != 360) {
+////                            //rotate (0 - abs_heading);
+////                            rotate(0);
+////                        }
+////                        setVel(-speedX, speedY);
+////                    }
+////                }
+//
+////                if (X + 50 >= pX && pX >= X - 50) {
+////                    trackingPlayer = false;
+////                    hitPlayer = true;
+////                    //System.out.println("false");
+////                    if (0 <= heading && heading < 180) setVel(speedX, speedY);
+////                    else if (180 <= heading && heading < 360) setVel(-speedX, speedY);
+////                }
+//            }
+//        });
 
         // DIRECTION SPRITE HANDLING
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
-                if (heading >= 360) {
-                    abs_heading = heading % 360;
-                    setPicture(sprites[abs_heading / 30]);
-                }
-                else {
-                    abs_heading = heading;
-                    setPicture(sprites[abs_heading / 30]);
-                }
-
                 setDrawingPriority(4);
                 if (getVelX() > 0) {
                     direction = 1;

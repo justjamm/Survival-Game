@@ -41,6 +41,10 @@ public class Player extends Entity {
 
     private final Random RAND = new Random();
     public int damage;
+    private final int minDamage = 10;
+    private final int maxDamage = 20;
+
+    private int timePlayed = 0;
 
 
     public Player(Scene scene) {
@@ -58,7 +62,7 @@ public class Player extends Entity {
         speedX = 2;
         speedY = 7;
 
-        maxHealth = 300;
+        maxHealth = 200;
         currentHealth = maxHealth;
 
         name = "Default";
@@ -67,10 +71,13 @@ public class Player extends Entity {
         setPicture(spriteR);
         setY(-getHeight());
 
+        startTimePlayed();
+
         // GRAVITY
         ClockWorker.addTask(new Task() {
             @Override
             public void run() {
+
 
 
                 if (touchingFloor) {
@@ -282,55 +289,74 @@ public class Player extends Entity {
 
     public int giveDamage() {
 
-        damage = RAND.nextInt(5, 10);
-        if (damage == 10) {
+        damage = RAND.nextInt(minDamage, maxDamage);
+        if (damage == maxDamage) {
             System.out.println("Critical Hit!");
-            System.out.println("Hit for " + damage);
         }
-        else {
-            System.out.println("Hit for " + damage);
-
-        }
+        System.out.println("Hit for " + damage);
         return damage;
+    }
+
+    public void addHealth(int h) {
+        maxHealth += h;
+        currentHealth += h;
+
+        System.out.printf("Player has gained %d health!\n%s health: %d / %d\n", h, tag, currentHealth, maxHealth);
     }
 
     @Override
     public void takeDamage(int damage) {
 
-        ClockWorker.addTask(new Task(damageCooldown) {
-            @Override
-            public void run() {
-                if (iteration() == damageCooldown) {
+//        ClockWorker.addTask(new Task(damageCooldown) {
+//            @Override
+//            public void run() {
+//                if (iteration() == damageCooldown) {
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
-                        BasicDialog.getOK(getDeathText(iteration()));
+                        BasicDialog.getOK(getDeathText(getTimePlayed()));
                         BasicFrame.getFrame().dispose();
                         System.exit(0);
                     }
-                    this.setFinished();
-                }
+//                    this.setFinished();
+//                }
+//            }
+//        });
+    }
+
+    private String getDeathText(int surviveTime) {
+        final Random RANDOM = new Random();
+
+        final String[] firstArr = {"The player has fallen in battle.", "You have fallen in battle.", "Your brave warrior has died.", "The Player has died.", "You ran out of health!", "you died lol.", "How did you let them kill you?", "You have failed your mission soldier.", "You surrendered to the horde."};
+        final String[] secondArr = {"This world is doomed.", "Chaos awaits...", "The horde has emerged victorious.", "It's all over..."};
+        final String[] thirdArr = {"You survived for %d seconds.", "You fought off the horde for %d seconds.", "Congratulations, you survived for %d seconds"};
+
+        int f = RANDOM.nextInt(0, firstArr.length - 1);
+        int s = RANDOM.nextInt(0, secondArr.length - 1);
+        int t = RANDOM.nextInt(0, thirdArr.length - 1);
+
+        String fStr = firstArr[f];
+        String sStr = secondArr[s];
+        String tStr = String.format(thirdArr[t], surviveTime);
+
+        String deathText = String.format("%s %s \n%s\nPress OK to exit\n\n\nEnd Text Combo %d : %d : %d\n", fStr, sStr, tStr, f, s, t);
+        return deathText;
+
+    }
+
+    private void startTimePlayed() {
+
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+//                timePlayed++;
+                if (iteration() % 200 == 0) timePlayed++;
             }
         });
     }
 
-    public String getDeathText(int surviveTime) {
-        final Random RANDOM = new Random();
-
-        final String[] first = {"The player has fallen in battle.", "You have fallen in battle.", "Your brave warrior has died.", "The Player has died.", "You ran out of health!", "you died lol.", "How did you let them kill you?", "You have failed your mission soldier.", "You surrendered to the horde."};
-        final String[] second = {"This world is doomed.", "Chaos awaits...", "The horde has emerged victorious.", "It's all over..."};
-        final String[] third = {"You survived for %d seconds.", "You fought off the horde for %d seconds.", "Congratulations, you survived for %d seconds"};
-
-        String f = first[RANDOM.nextInt(0, first.length - 1)];
-        String s = second[RANDOM.nextInt(0, second.length - 1)];
-        String t = String.format(third[RANDOM.nextInt(0, third.length - 1)], surviveTime);
-
-        String deathText = String.format("%s %s \n%s\nPress OK to exit", f, s, t);
-
-
-        return deathText;
+    private int getTimePlayed() {
+//        return timePlayed / 200;
+        return timePlayed;
     }
 }
-
-
-

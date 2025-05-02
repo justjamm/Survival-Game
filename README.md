@@ -49,6 +49,11 @@ Trees may only half-load in, no clue why.
 <li>
 For some reason, at the right edge of the map, all sprites of subclass <b>Entity</b> disappear from the screen.
 </li>
+<li>
+If you land on a platform and walk off or walk off the ground, you still float in the air. This is due to
+how I program gravity, however fixing this would add additional lag and this program
+is already laggy enough.
+</li>
 </ul>
 
 ---

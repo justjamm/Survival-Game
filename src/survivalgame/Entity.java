@@ -31,19 +31,19 @@ public class Entity extends Sprite {
 
     public void takeDamage(int damage) {
 
-        ClockWorker.addTask(new Task(damageCooldown) {
-            @Override
-            public void run() {
-                if (iteration() == damageCooldown) {
+//        ClockWorker.addTask(new Task(damageCooldown) {
+//            @Override
+//            public void run() {
+//                if (iteration() == damageCooldown) {
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {
                         destroy();
                     }
-                    this.setFinished();
-                }
-            }
-        });
+//                    this.setFinished();
+//                }
+//            }
+//        });
 
     }
 
