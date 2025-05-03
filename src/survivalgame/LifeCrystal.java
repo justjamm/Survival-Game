@@ -1,12 +1,13 @@
 package survivalgame;
 
 import basicgraphics.Scene;
-import basicgraphics.Sprite;
 import basicgraphics.images.Picture;
+import basicgraphics.sounds.ReusableClip;
 
 public class LifeCrystal extends Interactable {
 
-    private final int health = 30;
+    private final int healthBoost = 20;
+    final ReusableClip useAudio = new ReusableClip("star.wav");
 
     public LifeCrystal(Scene scene) {
         super(scene);
@@ -18,7 +19,8 @@ public class LifeCrystal extends Interactable {
     }
 
     public int giveHealth() {
-        return this.health;
+        useAudio.playNow();
+        return healthBoost;
     }
 
 

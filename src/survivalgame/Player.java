@@ -33,18 +33,19 @@ public class Player extends Entity {
             new Picture("5.png"), new Picture("5f.png")};
 
     public volatile boolean isSwinging;
+    public volatile boolean isHit;
     public double InitY;
     private final double JUMP_DIST = spriteL.getWidth() * 3.5;
     public String name;
     public MouseAdapter ma;
     public KeyListener kl;
 
-    private final Random RAND = new Random();
-    public int damage;
     private final int minDamage = 10;
     private final int maxDamage = 20;
 
     private int timePlayed = 0;
+
+    Weapon weapon;
 
 
     public Player(Scene scene) {
@@ -62,10 +63,11 @@ public class Player extends Entity {
         speedX = 2;
         speedY = 7;
 
-        maxHealth = 200;
+        maxHealth = 100;
         currentHealth = maxHealth;
 
         name = "Default";
+        weapon = new Weapon(scene, minDamage, maxDamage);
 
         setDrawingPriority(5);
         setPicture(spriteR);
@@ -265,6 +267,34 @@ public class Player extends Entity {
                 }
             }
         });
+
+        // When health below half, *slowly* regain health
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+                if (currentHealth <= maxHealth / 2) {
+                    if (iteration() % (200 / 4) == 0) {
+                        addHealth(0);
+                    }
+                }
+            }
+        });
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+                if (isHit) {
+                    ClockWorker.addTask(new Task() {
+                        @Override
+                        public void run() {
+                            if (iteration() == 100) {
+                                isHit = false;
+                                this.setFinished();
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -289,7 +319,7 @@ public class Player extends Entity {
 
     public int giveDamage() {
 
-        damage = RAND.nextInt(minDamage, maxDamage);
+        int damage = weapon.giveDamage();
         if (damage == maxDamage) {
             System.out.println("Critical Hit!");
         }
@@ -297,11 +327,14 @@ public class Player extends Entity {
         return damage;
     }
 
-    public void addHealth(int h) {
+    public void addMaxHealth(int h) {
         maxHealth += h;
         currentHealth += h;
 
         System.out.printf("Player has gained %d health!\n%s health: %d / %d\n", h, tag, currentHealth, maxHealth);
+    }
+    public void addHealth(int h) {
+        currentHealth += h;
     }
 
     @Override
@@ -311,6 +344,8 @@ public class Player extends Entity {
 //            @Override
 //            public void run() {
 //                if (iteration() == damageCooldown) {
+                    isHit = true;
+
                     currentHealth -= damage;
                     System.out.println(tag + " health: " + currentHealth + " / " + maxHealth);
                     if (currentHealth <= 0) {

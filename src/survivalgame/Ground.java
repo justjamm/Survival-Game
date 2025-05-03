@@ -8,19 +8,17 @@ import java.awt.image.BufferedImage;
 
 public class Ground extends Sprite {
     final int SCALE = 50;
-    final int WIDTH = 4000;
+    final int WIDTH = 1200 * 4;
     final int HEIGHT = 500;
 
-    public Ground(Scene s, Dimension d) {
+    public Ground(Scene s, int width, int height) {
         super(s);
         BufferedImage bi = BasicFrame.createImage(WIDTH, HEIGHT);
         Graphics g = bi.getGraphics();
         g.setColor(new Color(23, 63, 50));
-        System.out.println(d.width);
         g.fillRect(0, 0, WIDTH, HEIGHT);
         setY(HEIGHT);
         setX(0);
-        System.out.println(getY());
         setDrawingPriority(2);
         Picture pi = new Picture(bi);
         setPicture(pi);

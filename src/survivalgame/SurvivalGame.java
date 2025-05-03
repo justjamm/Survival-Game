@@ -6,8 +6,7 @@ import basicgraphics.ClockWorker;
 public class  SurvivalGame {
     public static void main(String[] args) {
         BasicFrame bf = new BasicFrame("Survival Game");
-        MainCard mc = new MainCard(bf);
-        TitleCard tc = new TitleCard(bf, mc);
+        TitleCard tc = new TitleCard(bf);
         ClockWorker.initialize(5);
         bf.show();
         TitleCard.showCard();

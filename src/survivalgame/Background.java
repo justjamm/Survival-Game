@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class Background extends Sprite {
 
-    public Background(Scene s, Dimension d) {
+    public Background(Scene s) {
         super(s);
         freezeOrientation = true;
         setDrawingPriority(1);

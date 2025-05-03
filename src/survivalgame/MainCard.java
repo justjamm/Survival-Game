@@ -5,6 +5,7 @@ import basicgraphics.sounds.ReusableClip;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class  MainCard {
@@ -15,6 +16,14 @@ public class  MainCard {
     private Dimension BOARD;
     private final int NUM_BACKGROUNDS = 4;
 
+    private static final ReusableClip music1 = new ReusableClip("Music-Overworld_Day.wav");
+
+
+    private int zombCap;
+    private int zombTag;
+    private int eyeCap;
+    private int eyeTag;
+    private int heartCap;
 
 
 
@@ -32,12 +41,10 @@ public class  MainCard {
         sc.getScene().periodic_x = false;
         sc.getScene().periodic_y = false;
 
-        ReusableClip music1 = new ReusableClip("title.wav");
-        music1.loop();
 
         // BACKGROUND & GROUND
-        BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), sc.getScene().getBackgroundSize(), NUM_BACKGROUNDS);
-        Ground g = new Ground(sc.getScene(), sc.getScene().getBackgroundSize());
+        BackgroundHandler bgh = new BackgroundHandler(sc.getScene(), 1200 * NUM_BACKGROUNDS, 3928, NUM_BACKGROUNDS);
+        Ground g = new Ground(sc.getScene(), 1200 * NUM_BACKGROUNDS, 3928);
 
         // PLAYER
         Player p = new Player(sc.getScene());
@@ -85,49 +92,62 @@ public class  MainCard {
         // ZOMBIES
         //
 
-        Zombie[] zombs = new Zombie[5];
-//        ClockWorker.addTask(new Task() {
-//           @Override
-//           public void run() {
-               for (int i = 0; i < zombs.length; i++) {
-                   if (zombs[i] == null || !zombs[i].isActive()) {
-                       Zombie z = new Zombie(sc.getScene(), p);
-                       z.setX(RANDOM.nextInt(100, 3500));
-                       z.tag = String.format("Zombie %d", i);
-                       zombs[i] = z;
-                       int j = i;
-                       mc.addMouseListener(new MouseAdapter() {
-                           @Override
-                           public void mouseClicked(MouseEvent e) {
-                               System.out.println("Zombie clicked");
+        ArrayList<Zombie> zombs = new ArrayList<>();
+        int zombsX = 500;
+        zombCap = 5;
+        zombTag = 0;
+        for (int i = 0; i <= zombCap; i++) {
+            Zombie z = new Zombie(sc.getScene(), p);
+            z.setX(zombsX);
+            zombsX += 500;
+            z.setY(430);
+            z.tag = String.format("Zombie %d", zombTag++);
 
-                               if (between(zombs[j].getX(), p.getX() - 100, p.getX() + 100)) {
-                                   System.out.println("Zombie hit!");
-                               }
-                           }
-
-                       });
+            ClockWorker.addTask(new Task() {
+                public void run() {
+                   if ((z.getX() + 2*z.getWidth() >= p.getX() && p.getX() >= z.getX() - 2*z.getWidth()) && (z.getY() + 2*z.getHeight() >= p.getY() && p.getY() >= z.getY() - 2*z.getHeight())) {
+                       if (p.isSwinging && z.isActive()) {
+                           z.takeDamage(p.giveDamage());
+                           int knockback = 50 * z.direction;
+                           z.setVel(-2 * z.getVelX(), -0.5 * z.getVelY());
+                           z.setX(z.getX() - knockback);
+                       }
                    }
-               }
-//           }
-//        });
 
-        // PLAYER-ZOMBIE COLLISION
-        sc.addSpriteSpriteCollisionListener(Player.class, Zombie.class, new SpriteSpriteCollisionListener<Player, Zombie>() {
-            @Override
-            public void collision(Player p, Zombie z) {
-                if (p.isSwinging) {
-                    z.takeDamage(p.giveDamage());
-                    int knockback = 50 * z.direction;
-                    z.setVel(-2 * z.getVelX(), -0.5 * z.getVelY());
-                    z.setX(z.getX() - knockback);
+                   if ((z.getX() + z.getWidth() >= p.getX() && p.getX() >= z.getX() - z.getWidth()) && (z.getY() + z.getHeight() >= p.getY() && p.getY() >= z.getY() - z.getHeight())) {
+                       if (z.isActive()) {
+                           if (!p.isHit) {
+                               if (p.direction == 1) {
+                                   p.setX(p.getX() - 50);
+                               }
+                               else {
+                                   p.setX(p.getX() + 50);
+                               }
+                               p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                               p.takeDamage(z.giveDamage());
+                           }
+                       }
+                   }
+
+
                 }
-                else {
-                    p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
-                    p.takeDamage(z.giveDamage());
+            });
+
+            zombs.add(z);
+            int j = i;
+            mc.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                   System.out.println("Zombie clicked");
+
+                   if (between(zombs.get(j).getX(), p.getX() - 100, p.getX() + 100)) {
+                       System.out.println("Zombie hit!");
+                   }
                 }
-            }
-        });
+
+            });
+        }
+
 
         // ZOMBIE-GROUND COLLISION
         sc.addSpriteSpriteCollisionListener(Zombie.class, Ground.class, new SpriteSpriteCollisionListener<Zombie, Ground>() {
@@ -152,53 +172,99 @@ public class  MainCard {
             }
         });
 
-        // ZOMBIE-ZOMBIE COLLISION
-        sc.addSpriteSpriteCollisionListener(Zombie.class, Zombie.class, new SpriteSpriteCollisionListener<Zombie, Zombie>() {
-            @Override
-            public void collision(Zombie z1, Zombie z2) {
-                z1.setVel(0, z1.getVelY());
-            }
-        });
 
         //
         // DEMON EYES
         //
 
-        DemonEye[] eyes = new DemonEye[3];
-//        ClockWorker.addTask(new Task() {
-//            @Override
-//            public void run() {
-                for (int i = 0; i < eyes.length; i++) {
-                    if (eyes[i] == null || !eyes[i].isActive()) {
-                        DemonEye de = new DemonEye(sc.getScene(), p);
-                        de.setX(RANDOM.nextInt(100, 3500));
-                        de.setY(RANDOM.nextInt(200, 375));
-                        de.tag = String.format("Demon Eye %d", i);
-                        eyes[i] = de;
+//        DemonEye[] eyes = new DemonEye[6];
+//                for (int i = 0; i < eyes.length; i++) {
+//                    if (eyes[i] == null || !eyes[i].isActive()) {
+//                        DemonEye de = new DemonEye(sc.getScene(), p);
+//                        de.setX(RANDOM.nextInt(500, 1200 * NUM_BACKGROUNDS));
+//                        de.setY(RANDOM.nextInt(200, 375));
+//                        de.tag = String.format("Demon Eye %d", i);
+//
+//                        ClockWorker.addTask(new Task() {
+//                            public void run() {
+//                                if ((de.getX() + 2*de.getWidth() >= p.getX() && p.getX() >= de.getX() - 2*de.getWidth()) && (de.getY() + 2*de.getHeight() >= p.getY() && p.getY() >= de.getY() - 2*de.getHeight())) {
+//                                    if (p.isSwinging && de.isActive()) {
+//                                        de.takeDamage(p.giveDamage());
+//                                        int knockback = 50 * de.direction;
+//                                        de.setVel(-2 * de.getVelX(), -0.5 * de.getVelY());
+//                                        de.setX(de.getX() - knockback);
+//                                    }
+//                                }
+//
+//                                if ((de.getX() + de.getWidth() >= p.getX() && p.getX() >= de.getX() - de.getWidth()) && (de.getY() + de.getHeight() >= p.getY() && p.getY() >= de.getY() - de.getHeight())) {
+//                                    if (de.isActive()) {
+//                                        if (!p.isHit) {
+//                                            p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+//                                            p.takeDamage(de.giveDamage());
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        });
+//
+//                        eyes[i] = de;
+//                    }
+//                }
+        ArrayList<DemonEye> eyes = new ArrayList<>();
+        int eyeX = 500;
+        eyeCap = 5;
+        eyeTag = 0;
+        for (int i = 0; i <= eyeCap; i++) {
+            DemonEye de = new DemonEye(sc.getScene(), p);
+            de.setX(eyeX);
+            eyeX += 500;
+            de.setY(RANDOM.nextInt(300, 400));
+            de.tag = String.format("Demon Eye %d", eyeTag++);
+
+            ClockWorker.addTask(new Task() {
+                public void run() {
+                    if ((de.getX() + 2*de.getWidth() >= p.getX() && p.getX() >= de.getX() - 2*de.getWidth()) && (de.getY() + 2*de.getHeight() >= p.getY() && p.getY() >= de.getY() - 2*de.getHeight())) {
+                        if (p.isSwinging && de.isActive()) {
+                            de.takeDamage(p.giveDamage());
+                            int knockback = 50 * de.direction;
+                            //de.setVel(-2 * de.getVelX(), -0.5 * de.getVelY());
+                            de.setX(de.getX() - knockback);
+                        }
+                    }
+
+                    if ((de.getX() + de.getWidth() >= p.getX() && p.getX() >= de.getX() - de.getWidth()) && (de.getY() + de.getHeight() >= p.getY() && p.getY() >= de.getY() - de.getHeight())) {
+                        if (de.isActive()) {
+                            if (!p.isHit) {
+                                if (p.direction == 1) {
+                                    p.setX(p.getX() - 50);
+                                }
+                                else {
+                                    p.setX(p.getX() + 50);
+                                }
+                                p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                                p.takeDamage(de.giveDamage());
+                            }
+                        }
                     }
                 }
-//            }
-//        });
+            });
 
-        // PLAYER-EYE COLLISION
-        sc.addSpriteSpriteCollisionListener(Player.class, DemonEye.class, new SpriteSpriteCollisionListener<Player, DemonEye>() {
-            @Override
-            public void collision(Player p, DemonEye de) {
-                p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
-//                if (!de.hitPlayer) {
-                    p.takeDamage(de.giveDamage());
-                    de.hitPlayer = true;
-//                }
-            }
-        });
+            eyes.add(de);
+            int j = i;
+            mc.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    System.out.println("Demon Eye clicked");
 
-        //EYE-EYE COLLISION
-        sc.addSpriteSpriteCollisionListener(DemonEye.class, DemonEye.class, new SpriteSpriteCollisionListener<DemonEye, DemonEye>() {
-            @Override
-            public void collision(DemonEye d1, DemonEye d2) {
-                d1.setVel(-d1.getVelX(), d1.getVelY());
-            }
-        });
+                    if (between(zombs.get(j).getX(), p.getX() - 100, p.getX() + 100)) {
+                        System.out.println("Demon Eye hit!");
+                    }
+                }
+
+            });
+        }
+
+
 
         //
         // INTERACTABLES
@@ -207,22 +273,28 @@ public class  MainCard {
         int treeX = 100;
         Tree[] trees = new Tree[15];
         for (int i=0;i<trees.length;i++) {
-            Tree t = new Tree(sc.getScene());
-            t.setX(RANDOM.nextInt(treeX - 50, treeX + 50));
-            treeX += 200;
-            t.setY(1.1*t.getHeight());
-            trees[i] = t;
+            if (trees[i] == null || !trees[i].isActive()) {
+                Tree t = new Tree(sc.getScene());
+                t.setX(RANDOM.nextInt(treeX - 50, treeX + 50));
+                treeX += 200;
+                t.setY(1.1*t.getHeight());
+                trees[i] = t;
+            }
         }
 
 
         Platform[] platforms = new Platform[35];
         int platformsX = 100;
         for (int i = 0; i < platforms.length; i++) {
-            Platform plat = new Platform(sc.getScene());
-            plat.setX(platformsX);
-            platformsX += 200;
-            plat.setY(RANDOM.nextInt(100, 300));
-            platforms[i] = plat;
+            if (platforms[i] == null || !platforms[i].isActive()) {
+                Platform plat = new Platform(sc.getScene());
+                plat.setX(platformsX);
+                platformsX += 200;
+                plat.setY(RANDOM.nextInt(100, 300));
+                platforms[i] = plat;
+
+
+            }
         }
 
         // ZOMBIE-PLATFORM COLLISION
@@ -265,28 +337,165 @@ public class  MainCard {
             }
         });
 
+        // LIFE CRYSTALS
         LifeCrystal[] lcrystals = new LifeCrystal[3];
-        final int crystalsX = 800;
-        for (int i = 0; i < lcrystals.length; i++) {
-            if (lcrystals[i] == null || !lcrystals[i].isActive()) {
-                LifeCrystal lc = new LifeCrystal(sc.getScene());
-                lc.setX(crystalsX * (i + 1));
-                lc.setY(430);
-            }
-        }
+        int crystalsX = 800;
+                for (int i = 0; i < lcrystals.length; i++) {
+                    if (lcrystals[i] == null || !lcrystals[i].isActive()) {
+                        LifeCrystal lc = new LifeCrystal(sc.getScene());
+//                        lc.setX(RANDOM.nextInt(500, 1200 * NUM_BACKGROUNDS));
+                        lc.setX(crystalsX);
+                        crystalsX += 800;
+                        lc.setY(430);
 
-        sc.addSpriteSpriteCollisionListener(Player.class, LifeCrystal.class, new SpriteSpriteCollisionListener<Player, LifeCrystal>() {
+                        ClockWorker.addTask(new Task() {
+                            @Override
+                            public void run() {
+                                if ((lc.getX() + lc.getWidth() >= p.getX() && p.getX() >= lc.getX() - lc.getWidth()) && (lc.getY() + lc.getHeight() >= p.getY() && p.getY() >= lc.getY() - lc.getHeight())) {
+                                    if (lc.isActive()) {
+                                        p.addMaxHealth(lc.giveHealth());
+                                        lc.destroy();
+                                    }
+                                }
+                            }
+
+                        });
+                        lcrystals[i] = lc;
+                    }
+                }
+
+        // 2ND WAVES OF ZOMBIES
+        ClockWorker.addTask(new Task() {
             @Override
-            public void collision(Player p, LifeCrystal lc) {
-                if (lc.isActive()) {
-                    p.addHealth(lc.giveHealth());
-                    lc.destroy();
+            public void run() {
+
+                zombs.removeIf(z -> !z.isActive());
+
+                if (zombs.isEmpty()) {
+                    System.out.println("2ND WAVE OF ZOMBIES");
+                    int zombsX = 500;
+                    zombCap *= 2;
+                    for (int i = 0; i <= zombCap; i++) {
+                        Zombie z = new Zombie(sc.getScene(), p);
+                        z.setX(zombsX);
+                        zombsX += 500;
+                        z.setY(430);
+                        z.tag = String.format("Zombie %d", zombTag++);
+
+                        ClockWorker.addTask(new Task() {
+                            public void run() {
+                                if ((z.getX() + 2*z.getWidth() >= p.getX() && p.getX() >= z.getX() - 2*z.getWidth()) && (z.getY() + 2*z.getHeight() >= p.getY() && p.getY() >= z.getY() - 2*z.getHeight())) {
+                                    if (p.isSwinging && z.isActive()) {
+                                        z.takeDamage(p.giveDamage());
+                                        int knockback = 50 * z.direction;
+                                        z.setVel(-2 * z.getVelX(), -0.5 * z.getVelY());
+                                        z.setX(z.getX() - knockback);
+                                    }
+                                }
+
+                                if ((z.getX() + z.getWidth() >= p.getX() && p.getX() >= z.getX() - z.getWidth()) && (z.getY() + z.getHeight() >= p.getY() && p.getY() >= z.getY() - z.getHeight())) {
+                                    if (z.isActive()) {
+                                        if (!p.isHit) {
+                                            if (p.direction == 1) {
+                                                p.setX(p.getX() - 50);
+                                            }
+                                            else {
+                                                p.setX(p.getX() + 50);
+                                            }
+                                            p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                                            p.takeDamage(z.giveDamage());
+                                        }
+                                    }
+                                }
+
+
+                            }
+                        });
+
+                        zombs.add(z);
+                        int j = i;
+                        mc.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                System.out.println("Zombie clicked");
+
+                                if (between(zombs.get(j).getX(), p.getX() - 100, p.getX() + 100)) {
+                                    System.out.println("Zombie hit!");
+                                }
+                            }
+
+                        });
+                    }
+
                 }
             }
         });
 
 
 
+
+        ClockWorker.addTask(new Task() {
+            @Override
+            public void run() {
+
+            eyes.removeIf(de -> !de.isActive());
+
+            if (eyes.isEmpty()) {
+                System.out.println("2ND WAVE OF EYES");
+                int eyeX = 500;
+                eyeCap *= 2;
+                for (int i = 0; i <= eyeCap; i++) {
+                    DemonEye de = new DemonEye(sc.getScene(), p);
+                    de.setX(eyeX);
+                    eyeX += 500;
+                    de.setY(RANDOM.nextInt(300, 400));
+                    de.tag = String.format("Demon Eye %d", eyeTag++);
+
+                    ClockWorker.addTask(new Task() {
+                        public void run() {
+                            if ((de.getX() + 2*de.getWidth() >= p.getX() && p.getX() >= de.getX() - 2*de.getWidth()) && (de.getY() + 2*de.getHeight() >= p.getY() && p.getY() >= de.getY() - 2*de.getHeight())) {
+                                if (p.isSwinging && de.isActive()) {
+                                    de.takeDamage(p.giveDamage());
+                                    int knockback = 50 * de.direction;
+                                    //de.setVel(-2 * de.getVelX(), -0.5 * de.getVelY());
+                                    de.setX(de.getX() - knockback);
+                                }
+                            }
+
+                            if ((de.getX() + de.getWidth() >= p.getX() && p.getX() >= de.getX() - de.getWidth()) && (de.getY() + de.getHeight() >= p.getY() && p.getY() >= de.getY() - de.getHeight())) {
+                                if (de.isActive()) {
+                                    if (!p.isHit) {
+                                        if (p.direction == 1) {
+                                            p.setX(p.getX() - 50);
+                                        }
+                                        else {
+                                            p.setX(p.getX() + 50);
+                                        }
+                                        p.setVel(-2 * p.getVelX(), -0.5 * p.getVelY());
+                                        p.takeDamage(de.giveDamage());
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    eyes.add(de);
+                    int j = i;
+                    mc.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            System.out.println("Demon Eye clicked");
+
+                            if (between(zombs.get(j).getX(), p.getX() - 100, p.getX() + 100)) {
+                                System.out.println("Demon Eye hit!");
+                            }
+                        }
+
+                    });
+                }
+            }
+            }
+        });
 
         ClockWorker.addTask(sc.moveSprites());
 
@@ -307,12 +516,16 @@ public class  MainCard {
         return (lower <= value && value <= upper);
     }
 
-    public void showCard() {
+    public static void showCard() {
         mc.showCard();
         mc.requestFocus();
+
+        music1.loop();
     }
 
-    public void hideCard() {
+    public static void hideCard() {
         mc.setVisible(false);
+        music1.stop();
     }
+
 }

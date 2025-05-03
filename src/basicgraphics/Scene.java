@@ -62,8 +62,4 @@ public class Scene {
     public SpriteComponent getSpriteComponent() {
         return spritecomponent;
     }
-
-    public Dimension getBackgroundSize() {
-        return backgroundSize;
-    }
 }

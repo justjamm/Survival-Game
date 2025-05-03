@@ -125,6 +125,7 @@ public class Zombie extends Enemy {
 
     @Override
     public int giveDamage() {
-        return RANDOM.nextInt(damage - 2, damage + 2);
+        if (isActive()) return RANDOM.nextInt(damage - 2, damage + 2);
+        else return 0;
     }
 }

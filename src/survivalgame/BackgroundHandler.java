@@ -17,7 +17,7 @@ public class BackgroundHandler {
 
         // GROUND IMAGES
         for (int i = 0; i < bgs.length; i++) {
-            bgs[i] = new Background(scene, d);
+            bgs[i] = new Background(scene);
             bgs[i].setDrawingPriority(1);
             bgs[i].setPicture(forest[index]);
         }
@@ -33,10 +33,27 @@ public class BackgroundHandler {
             }
             //x *= -1;
         }
-
-
-
     }
+
+    public BackgroundHandler(Scene scene, int width, int height, int num) {
+        bgs = new Background[num];
+        // GROUND IMAGES
+        for (int i = 0; i < bgs.length; i++) {
+            bgs[i] = new Background(scene);
+            bgs[i].setDrawingPriority(1);
+            bgs[i].setPicture(forest[index]);
+        }
+        int x = 0;
+        for (int i = 0; i < bgs.length; i++) {
+            bgs[i].setX(x);
+
+            if (x >= 0) {
+                x += bgs[i].getWidth();
+            }
+            //x *= -1;
+        }
+    }
+
 
     public void setVel(double velx, double vely) {
         for (Background b : bgs) {

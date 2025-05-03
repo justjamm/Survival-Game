@@ -13,7 +13,8 @@ The requirements for this project was that it;
 
 At the top level, this game in **intended** to be a sandbox-based survival game, however due to time and project constraints (and programming knowledge), 
 I was unable to get the sandbox aspect functioning. 
-However, it is still a decently fun wave game.
+
+However, it is still a decently fun scoller-wave game.
 
 Overall, this project helped me increase my knowledge and experience in video game & object-oriented programming.
 
@@ -35,6 +36,7 @@ Overall, this project helped me increase my knowledge and experience in video ga
 <li>Randomly spawning enemies</li>
 <li>Various attack patterns</li>
 <li>Wave-based</li>
+<li>Health boosts as Life Crystals</li>
 </ul>
 
 <ins>Bugs</ins>:
