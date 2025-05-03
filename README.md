@@ -44,12 +44,25 @@ Overall, this project helped me increase my knowledge and experience in video ga
 <li>
 Collision only <b>sometimes</b> works as expected, I believe it to be an issue with the collision method using classes instead of instances of that class, which 
 cause multiple collisions of the same class to not register.
+<ul>
+<li>
+<i>This has now been partially fixed, by just avoiding using collision altogether. Not optimal but I had to get this turned in on time.</i>
+</li>
+</ul>
 </li>
 <li>
 Trees may only half-load in, no clue why.
+<ul>
+<li><i>It may be an issue with clipping from the Background.</i></li>
+</ul>
 </li>
 <li>
 For some reason, at the right edge of the map, all sprites of subclass <b>Entity</b> disappear from the screen.
+<ul>
+<li>
+<i>Likely an issue with sizing of the SpriteComponent, Scene, or MainCard.</i>
+</li>
+</ul>
 </li>
 <li>
 If you land on a platform and walk off or walk off the ground, you still float in the air. This is due to
